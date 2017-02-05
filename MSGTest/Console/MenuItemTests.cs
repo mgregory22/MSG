@@ -54,7 +54,7 @@ namespace MSGTest.Console
         [Test]
         public void TestBasicKeyToStringIsCorrect()
         {
-            Assert.AreEqual("[t] Test", menuItem.ToString());
+            Assert.AreEqual("[t] Test\n", menuItem.ToString());
         }
 
         [Test]
@@ -144,14 +144,14 @@ namespace MSGTest.Console
         [Test]
         public void TestToStringWrapsAtWordBoundary()
         {
-            string testOutput = "[T] Test of a very long description to";
+            string testOutput = "[T] Test of a very long description to\n";
             Assert.AreEqual(testOutput.Length, menuItem.ToString().Length);
         }
 
         [Test]
         public void TestToStringReturnsSecondLineOfWrappedText()
         {
-            string testOutput = "test wrapping";
+            string testOutput = "test wrapping\n";
             Assert.IsTrue(menuItem.ToString(1).EndsWith(testOutput), "Expected: \"{0}\".EndsWith(\"{1}\")", menuItem.ToString(1), testOutput);
         }
     }
