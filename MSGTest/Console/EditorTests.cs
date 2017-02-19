@@ -491,7 +491,7 @@ namespace MSGTest.Console
             // Test
             read.PushLeftArrow(1, ConsoleModifiers.Control);
             editor.GetAndProcessKeys();
-            Assert.AreEqual(String.Empty, print.Output);
+            Assert.AreEqual("", print.Output);
         }
 
         [Test]

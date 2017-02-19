@@ -7,13 +7,13 @@ using System.Text;
 namespace MSG.Types.String
 {
     /// <summary>
-    ///   Screen drawing utility procedures.
+    /// Screen drawing utility procedures.
     /// </summary>
     public class Draw
     {
         /// <summary>
-        ///   Returns a line of dashes width long and interspersed with
-        ///   digits every 10 dashes.
+        /// Returns a line of dashes width long and interspersed with
+        /// digits every 10 dashes.
         /// </summary>
         /// <param name="width"></param>
         /// <returns></returns>
@@ -29,8 +29,8 @@ namespace MSG.Types.String
         }
 
         /// <summary>
-        ///   Returns a string consisting of the given text, a newline, and
-        ///   a line of dashes exactly as long as the text.
+        /// Returns a string consisting of the given text, a newline, and
+        /// a line of dashes exactly as long as the text.
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>

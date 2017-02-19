@@ -1,5 +1,5 @@
 ﻿//
-// MSGTest/IO/Editor/BufferTests.cs
+// MSGTest/Console/EditorAux/BufferTests.cs
 //
 
 using MSG.IO;
@@ -7,9 +7,9 @@ using MSG.Types.String;
 using NUnit.Framework;
 using System;
 using System.Diagnostics;
-using Buffer = MSG.Console.Editor.Buffer;
+using Buffer = MSG.Console.EditorAux.Buffer;
 
-namespace MSGTest.IO
+namespace MSGTest.Console.EditorAux
 {
     [TestFixture]
     public class NewBufferTests

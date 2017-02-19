@@ -7,7 +7,7 @@ using System.Text;
 namespace MSG.Types.String
 {
     /// <summary>
-    ///   String formatting procedures
+    /// String formatting procedures
     /// </summary>
     public class Format
     {

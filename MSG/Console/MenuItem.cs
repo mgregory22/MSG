@@ -2,57 +2,84 @@
 // MSG/Console/MenuItem.cs
 //
 
-using MSG.IO;
 using MSG.Patterns;
-using System;
 using System.Collections.Generic;
 
 namespace MSG.Console
 {
     /// <summary>
-    ///   The responsibilities of this class are:
-    ///   1. Generate the display of a shortcut and description.
-    ///   2. Receive a user-entered shortcut and if it matches the 
-    ///      shortcut defined by the menu item, perform the action(s)
-    ///      stated in the description.  The action can be a function
-    ///      or submenu.
+    /// The responsibilities of this class are:
+    /// 1. Generate the display of a shortcut and description.
+    /// 2. Receive a user-entered shortcut and if it matches the 
+    ///    shortcut defined by the menu item, perform the action(s)
+    ///    stated in the description.  The action can be a function
+    ///    or submenu.
     /// </summary>
     public class MenuItem
     {
         protected char keystroke;
         protected string description;
         protected DialogCommand dialogCommand;
+        protected Menu subMenu;
+        protected Condition enableCondition;
         protected int maxWidth;
         protected List<string> lines;
 
         /// <summary>
-        ///   Initializes a menu item object.
+        /// Initializes a menu item object.
         /// </summary>
         /// <param name="keystroke">
-        ///   Keystroke to activate command.
+        /// Keystroke to activate command.
         /// </param>
         /// <param name="description">
-        ///   Description of the command.
+        /// Description of the command.
         /// </param>
         /// <param name="dialogCommand">
-        ///   Command to be performed by the Do() call.
+        /// Command to be performed by the Do() call.
         /// </param>
-        /// <param name="enabler">
-        ///   Functoid to determine whether to enable the menu item.
+        /// <param name="enableCondition">
+        /// Functoid to determine whether to enable the menu item.
         /// </param>
-        public MenuItem(char keystroke, string description, DialogCommand dialogCommand)
+        public MenuItem(char keystroke, string description, DialogCommand dialogCommand, Condition enableCondition)
         {
             this.keystroke = keystroke;
             this.description = description;
             this.dialogCommand = dialogCommand;
+            this.enableCondition = enableCondition;
             this.maxWidth = 80;
             this.lines = new List<string>();
             UpdateLines();
         }
 
         /// <summary>
-        ///   An object that encapsulates the action to perform when the menu item 
-        ///   is selected.
+        /// Initializes a menu item object.
+        /// </summary>
+        /// <param name="keystroke">
+        /// Keystroke to activate command.
+        /// </param>
+        /// <param name="description">
+        /// Description of the command.
+        /// </param>
+        /// <param name="dialogCommand">
+        /// Command to be performed by the Do() call.
+        /// </param>
+        /// <param name="enableCondition">
+        /// Functoid to determine whether to enable the menu item.
+        /// </param>
+        public MenuItem(char keystroke, string description, Menu subMenu, Condition enableCondition)
+        {
+            this.keystroke = keystroke;
+            this.description = description;
+            this.subMenu = subMenu;
+            this.enableCondition = enableCondition;
+            this.maxWidth = 80;
+            this.lines = new List<string>();
+            UpdateLines();
+        }
+
+        /// <summary>
+        /// An object that encapsulates the action to perform when
+        /// the menu item is selected.
         /// </summary>
         public virtual DialogCommand DialogCommand
         {
@@ -61,7 +88,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Name or short description of the menu item.
+        /// Name or short description of the menu item.
         /// </summary>
         public virtual string Description
         {
@@ -74,20 +101,28 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Performs the action associated with the menu item.
+        /// Performs the action associated with the menu item.
         /// </summary>
-        public virtual void Do()
+        public virtual Command.Result Do()
         {
-            this.dialogCommand.Do();
+            // Should Menu be a subclass of DialogCommand???
+            // Should MenuItem be a subclass of DialogCommand???
+            if (dialogCommand != null) {
+                return dialogCommand.Do();
+            }
+            if (subMenu != null) {
+                return subMenu.Loop();
+            }
+            throw new System.InvalidOperationException("MenuItem is invalid");
         }
 
         /// <summary>
-        ///   True if the given keystroke matches the menu item keystroke.
+        /// True if the given keystroke matches the menu item keystroke.
         /// </summary>
         /// <param name="keystroke"></param>
         /// <returns>
-        ///   True if there was a match and the action was executed, whether
-        ///   the action was successful or not.
+        /// True if there was a match and the action was executed, whether
+        /// the action was successful or not.
         /// </returns>
         public bool DoesMatch(char keystroke)
         {
@@ -95,7 +130,19 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   The keystroke to activate the menu item.
+        /// True if the Test() of the menu item's enableCondition is true.
+        /// The Menu class uses this to determine whether to display and check
+        /// the keystroke of the menu item.
+        /// </summary>
+        public bool Enabled {
+            get
+            {
+                return this.enableCondition.Test();
+            }
+        }
+
+        /// <summary>
+        /// The keystroke to activate the menu item.
         /// </summary>
         public virtual char Keystroke
         {
@@ -108,8 +155,8 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   The number of lines in the description when it's word
-        ///   wrapped according to the MaxWidth property.
+        /// The number of lines in the description when it's word
+        /// wrapped according to the MaxWidth property.
         /// </summary>
         public virtual int LineCount
         {
@@ -117,8 +164,18 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   The amount of horizontal space available to print the
-        ///   description.
+        /// Returns the given line of the string representation of
+        /// the menu item.
+        /// </summary>
+        /// <param name="index"></param>
+        public virtual string ToStringByLine(int index = 0)
+        {
+            return lines[index] + "\n";
+        }
+
+        /// <summary>
+        /// The amount of horizontal space available to print the
+        /// description.
         /// </summary>
         public virtual int MaxWidth
         {
@@ -131,30 +188,42 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns the string representation of the menu item.  If the
-        ///   description is long enough to be wrapped, an index less than
-        ///   LineCount can be given to retrieve the associated line of text.
+        /// A submenu to display when the item is selected.
         /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public virtual string ToString(int index = 0)
-        {
-            return dialogCommand.IsEnabled() ? lines[index] + "\n" : "";
+        public virtual Menu SubMenu {
+            get { return subMenu; }
+            set { subMenu = value; }
         }
 
         /// <summary>
-        ///   Creates the display text of the menu item.  Takes bracketed keystroke
-        ///   and description, calculates line breaks and indents, and stores result
-        ///   in lines[].
+        /// Returns the string representation of the menu item.  If the
+        /// description is long enough to be wrapped, an index less than
+        /// LineCount can be given to retrieve the associated line of text.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            string s = "";
+            for (int i = 0; i < LineCount; i++) {
+                s += lines[i] + "\n";
+            }
+            return s;
+        }
+
+        /// <summary>
+        /// Creates the display text of the menu item.  Takes bracketed keystroke
+        /// and description, calculates line breaks and indents, and stores result
+        /// in lines[].
         /// </summary>
         private void UpdateLines()
         {
             lines.Clear();
-            string k = String.Format("[{0}] ", keystroke.ToString());
+            string k = string.Format("[{0}] ", keystroke.ToString());
             // Indent any wrapped description lines
-            string p = new String(' ', k.Length);
+            string p = new string(' ', k.Length);
             int maxDescWidth = maxWidth - p.Length;
-            string d = String.Format("{0}", description);
+            string d = string.Format("{0}", description);
 
             if (d.Length <= maxDescWidth)
             {
@@ -174,15 +243,15 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Splits a string (s) based on line length (maxWidth) and word wrap
-        ///   and inserts the lines into the given string list (lines).
+        /// Splits a string (s) based on line length (maxWidth) and word wrap
+        /// and inserts the lines into the given string list (lines).
         /// </summary>
         /// <param name="s"></param>
         /// <param name="maxWidth"></param>
         /// <param name="lines"></param>
         /// <remarks>
-        ///   This method has nothing to do with menu items per se and should
-        ///   probably be moved to a more general lib.
+        /// This method has nothing to do with menu items per se and should
+        /// probably be moved to a more general lib.
         /// </remarks>
         public virtual void WrapSplit(string s, int maxWidth, List<string> lines)
         {

@@ -20,7 +20,7 @@ namespace MSG.Patterns
         }
 
         /// <remarks>
-        ///   virtual is for testing
+        /// virtual is for testing
         /// </remarks>
         public virtual bool CanRedo()
         {
@@ -38,24 +38,28 @@ namespace MSG.Patterns
             redoStack.Clear();
         }
 
-        public virtual void Redo()
+        public virtual Command.Result Redo()
         {
             if (!CanRedo())
-                throw new InvalidOperationException("Nothing to redo");
-
+            {
+                return new Command.NothingToRedo();
+            }
             Command command = redoStack.Pop();
-            command.Do();
+            Command.Result result = command.Do();
             undoStack.Push(command);
+            return result;
         }
 
-        public virtual void Undo()
+        public virtual Command.Result Undo()
         {
             if (!CanUndo())
-                throw new InvalidOperationException("Nothing to undo");
-
+            {
+                return new Command.NothingToUndo();
+            }
             Command command = undoStack.Pop();
-            command.Undo();
+            Command.Result result = command.Undo();
             redoStack.Push(command);
+            return result;
         }
     }
 }

@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MSG</RootNamespace>
     <AssemblyName>MSG</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,19 +41,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Console\IntEditor.cs" />
+    <Compile Include="Patterns\Condition.cs" />
+    <Compile Include="Patterns\Conditions\CanRedo.cs" />
+    <Compile Include="Patterns\Conditions\CanUndo.cs" />
     <Compile Include="Patterns\DialogCommand.cs" />
+    <Compile Include="Types\Tree\Tree.cs" />
     <Compile Include="Patterns\UndoManager.cs" />
     <Compile Include="Types\Array\EndlessArray.cs" />
     <Compile Include="Types\String\Draw.cs" />
     <Compile Include="IO\ConsolePos.cs" />
     <Compile Include="Console\Editor.cs" />
-    <Compile Include="Console\Editor\WordWrapper.cs" />
-    <Compile Include="Console\Editor\Buffer.cs" />
+    <Compile Include="Console\EditorAux\WordWrapper.cs" />
+    <Compile Include="Console\EditorAux\Buffer.cs" />
     <Compile Include="Console\CharPrompt.cs" />
     <Compile Include="Console\Menu.cs" />
     <Compile Include="Console\MenuItem.cs" />
-    <Compile Include="Console\Editor\KeyClassification.cs" />
-    <Compile Include="Console\Editor\View.cs" />
+    <Compile Include="Console\EditorAux\KeyClasses.cs" />
+    <Compile Include="Console\EditorAux\View.cs" />
     <Compile Include="IO\Print.cs" />
     <Compile Include="Console\InputPrompt.cs" />
     <Compile Include="IO\Read.cs" />

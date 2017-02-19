@@ -35,7 +35,7 @@ namespace MSGTest.Console
             read = new Read(print);
             undoManager = new UndoManager();
             testDialogCommand = new TestDialogCommand(print, read, undoManager);
-            menuItem = new MenuItem(testKey, testDesc, testDialogCommand);
+            menuItem = new MenuItem(testKey, testDesc, testDialogCommand, new Always());
             menuItem.MaxWidth = testMaxWidth;
         }
 
@@ -119,9 +119,18 @@ namespace MSGTest.Console
         char testKey = 't';
         int testMaxWidth = 40;
 
-        public static void AssertStringLengthIsLessThanOrEqualToMaxWidth(string s, int maxWidth)
+        /// <remarks>
+        /// Assumes string ends with '\n'
+        /// </remarks>
+        public static void AssertAllLinesNoLongerThanMaxWidth(string s, int maxWidth)
         {
-            Assert.IsTrue(s.Length <= maxWidth, "Expected: {0} <= {1}, Actual: {0} > {1}", s.Length, maxWidth);
+            int sol = 0;
+            int eol = s.IndexOf('\n', sol);
+            while (eol > -1) {
+                Assert.IsTrue(eol - sol <= maxWidth, "Expected: {0} <= {1}, Actual: {0} > {1}", eol - sol, maxWidth);
+                sol = eol + 1;
+                eol = s.IndexOf('\n', sol);
+            }
         }
 
         [SetUp]
@@ -131,28 +140,28 @@ namespace MSGTest.Console
             read = new Read(print);
             undoManager = new UndoManager();
             TestDialogCommand testDialogCommand = new TestDialogCommand(print, read, undoManager);
-            menuItem = new MenuItem(testKey, testDesc, testDialogCommand);
+            menuItem = new MenuItem(testKey, testDesc, testDialogCommand, new Always());
             menuItem.MaxWidth = testMaxWidth;
         }
 
         [Test]
         public void TestToStringIsNoLongerThanMaxWidth()
         {
-            AssertStringLengthIsLessThanOrEqualToMaxWidth(menuItem.ToString(), testMaxWidth);
+            AssertAllLinesNoLongerThanMaxWidth(menuItem.ToString(), testMaxWidth);
         }
 
         [Test]
         public void TestToStringWrapsAtWordBoundary()
         {
             string testOutput = "[T] Test of a very long description to\n";
-            Assert.AreEqual(testOutput.Length, menuItem.ToString().Length);
+            Assert.AreEqual(testOutput.Length, menuItem.ToStringByLine(0).Length);
         }
 
         [Test]
         public void TestToStringReturnsSecondLineOfWrappedText()
         {
             string testOutput = "test wrapping\n";
-            Assert.IsTrue(menuItem.ToString(1).EndsWith(testOutput), "Expected: \"{0}\".EndsWith(\"{1}\")", menuItem.ToString(1), testOutput);
+            Assert.IsTrue(menuItem.ToStringByLine(1).EndsWith(testOutput), "Expected: \"{0}\".EndsWith(\"{1}\")", menuItem.ToStringByLine(1), testOutput);
         }
     }
 
@@ -172,10 +181,10 @@ namespace MSGTest.Console
 
         private int GetKeystrokePrefixLen()
         {
-            string line1 = menuItem.ToString(0);
-            int leftBracketPos = line1.IndexOf('[');
+            string itemString = menuItem.ToString();
+            int leftBracketPos = itemString.IndexOf('[');
             // The right bracket key might be the actual keystroke, so start searching for the right bracket 2 chars after the left bracket position
-            int rightBracketPos = line1.IndexOf(']', leftBracketPos + 2);
+            int rightBracketPos = itemString.IndexOf(']', leftBracketPos + 2);
             // There's a space after the right bracket, then the description starts
             return rightBracketPos + 1;
         }
@@ -187,7 +196,7 @@ namespace MSGTest.Console
             read = new Read(print);
             undoManager = new UndoManager();
             TestDialogCommand testDialogCommand = new TestDialogCommand(print, read, undoManager);
-            menuItem = new MenuItem(testKey, testDescLine1 + " " + testDescLine2 + " " + testDescLine3 + " " + testDescLine4, testDialogCommand);
+            menuItem = new MenuItem(testKey, testDescLine1 + " " + testDescLine2 + " " + testDescLine3 + " " + testDescLine4, testDialogCommand, new Always());
             menuItem.MaxWidth = testMaxWidth;
         }
 
@@ -196,10 +205,10 @@ namespace MSGTest.Console
         {
             List<string> lines = new List<string>();
             menuItem.WrapSplit(menuItem.Description, testMaxWidth, lines);
-            LongMenuItemTests.AssertStringLengthIsLessThanOrEqualToMaxWidth(testDescLine1, testMaxWidth);
-            LongMenuItemTests.AssertStringLengthIsLessThanOrEqualToMaxWidth(testDescLine2, testMaxWidth);
-            LongMenuItemTests.AssertStringLengthIsLessThanOrEqualToMaxWidth(testDescLine3, testMaxWidth);
-            LongMenuItemTests.AssertStringLengthIsLessThanOrEqualToMaxWidth(testDescLine4, testMaxWidth);
+            LongMenuItemTests.AssertAllLinesNoLongerThanMaxWidth(testDescLine1, testMaxWidth);
+            LongMenuItemTests.AssertAllLinesNoLongerThanMaxWidth(testDescLine2, testMaxWidth);
+            LongMenuItemTests.AssertAllLinesNoLongerThanMaxWidth(testDescLine3, testMaxWidth);
+            LongMenuItemTests.AssertAllLinesNoLongerThanMaxWidth(testDescLine4, testMaxWidth);
             Assert.AreEqual(testDescLine1, lines[0]);
             Assert.AreEqual(testDescLine2, lines[1]);
             Assert.AreEqual(testDescLine3, lines[2]);
@@ -212,7 +221,7 @@ namespace MSGTest.Console
             string prefix = new String(' ', GetKeystrokePrefixLen());
             for (int i = 1; i < menuItem.LineCount; i++)
             {
-                Assert.IsTrue(menuItem.ToString(i).StartsWith(prefix));
+                Assert.IsTrue(menuItem.ToStringByLine(i).StartsWith(prefix));
             }
         }
 

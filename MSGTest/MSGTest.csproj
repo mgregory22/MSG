@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MSGTest</RootNamespace>
     <AssemblyName>MSGTest</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -68,14 +69,14 @@
   <ItemGroup>
     <Compile Include="Console\MenuItemTests.cs" />
     <Compile Include="Console\CharPromptTests.cs" />
-    <Compile Include="Console\Editor\BufferTests.cs" />
+    <Compile Include="Console\EditorAux\BufferTests.cs" />
     <Compile Include="Console\IntEditorTests.cs" />
     <Compile Include="Patterns\TestDialogCommand.cs" />
     <Compile Include="Patterns\TestUndoManager.cs" />
     <Compile Include="Types\Array\EndlessArrayTests.cs" />
     <Compile Include="Types\String\DrawTests.cs" />
     <Compile Include="Console\EditorTests.cs" />
-    <Compile Include="Console\Editor\WordWrapperTests.cs" />
+    <Compile Include="Console\EditorAux\WordWrapperTests.cs" />
     <Compile Include="IO\TestPrint.cs" />
     <Compile Include="IO\TestRead.cs" />
     <Compile Include="Patterns\TestCommand.cs" />
@@ -92,7 +93,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Console\Editor\Wordwrap example.txt" />
+    <Content Include="Console\EditorAux\Wordwrap example.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -8,8 +8,8 @@ using System.Collections.Generic;
 namespace MSG.Types.Array
 {
     /// <summary>
-    ///   An array that returns the last element if the index
-    ///   is larger than the length of the array.
+    /// An array that returns the last element if the index
+    /// is larger than the length of the array.
     /// </summary>
     public class EndlessArray<T> : List<T>
     {

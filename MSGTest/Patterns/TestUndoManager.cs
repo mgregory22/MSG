@@ -1,12 +1,12 @@
 ﻿//
-// MSG/Patterns/UndoManager.cs
+// MSGTest/Patterns/TestUndoManager.cs
 //
 
 using System;
 using System.Collections.Generic;
 using MSG.Patterns;
 
-namespace MSG.Patterns
+namespace MSGTest.Patterns
 {
     public class TestUndoManager : UndoManager
     {

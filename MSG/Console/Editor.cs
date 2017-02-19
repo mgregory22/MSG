@@ -2,15 +2,17 @@
 // MSG/Console/Editor.cs
 //
 
+using MSG.Console.EditorAux;
 using MSG.IO;
 using System;
+using Buffer = MSG.Console.EditorAux.Buffer;
 
 namespace MSG.Console
 {
     /// <summary>
-    ///   More featureful console input editor.
+    /// More featureful console input editor.
     /// </summary>
-    public partial class Editor
+    public class Editor
     {
         protected Buffer buffer;
         protected Print print;
@@ -19,10 +21,10 @@ namespace MSG.Console
         protected string lastPrompt;
 
         /// <param name="print">
-        ///   Object used for printing
+        /// Object used for printing
         /// </param>
         /// <param name="read">
-        ///   Object used for reading
+        /// Object used for reading
         /// </param>
         public Editor(Print print, Read read)
         {
@@ -31,7 +33,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Gets one or more lines of input from the user.
+        /// Gets one or more lines of input from the user.
         /// </summary>
         public string GetAndProcessKeys()
         {
@@ -46,11 +48,11 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Override that allows heir to provide custom validation
-        ///   method for when the user presses enter
+        /// Override that allows heir to provide custom validation
+        /// method for when the user presses enter
         /// </summary>
         /// <param name="input">
-        ///   Complete input the user entered in
+        /// Complete input the user entered in
         /// </param>
         virtual public bool InputIsValid(string input)
         {
@@ -58,11 +60,11 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Override that allows heir to provide custom validation
-        ///   method for each keystroke
+        /// Override that allows heir to provide custom validation
+        /// method for each keystroke
         /// </summary>
         /// <param name="keyInfo">
-        ///   Last keystroke entered by the user within the input loop
+        /// Last keystroke entered by the user within the input loop
         /// </param>
         virtual public bool KeyIsValid(ConsoleKeyInfo keyInfo)
         {
@@ -70,7 +72,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns the last prompt that was printed on the screen (mostly for testing).
+        /// Returns the last prompt that was printed on the screen (mostly for testing).
         /// </summary>
         public string LastPrompt
         {
@@ -78,10 +80,10 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Displays the prompt and reads a string.
+        /// Displays the prompt and reads a string.
         /// </summary>
         /// <returns>
-        ///   The string entered by the user
+        /// The string entered by the user
         /// </returns>
         virtual public string StringPrompt(string prompt = "$ ")
         {
@@ -106,25 +108,25 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Performs the key command action
+        /// Performs the key command action
         /// </summary>
         /// <param name="keyInfo">
-        ///   Key command/input
+        /// Key command/input
         /// </param>
         /// <param name="buffer">
-        ///   Editor buffer
+        /// Editor buffer
         /// </param>
         /// <param name="view">
-        ///   Editor console
+        /// Editor console
         /// </param>
         /// <returns>
-        ///   True if the user quit
+        /// True if the user quit
         /// </returns>
         virtual public bool ProcessKey(ConsoleKeyInfo keyInfo, Buffer buffer, View view)
         {
             bool done = false;
 
-            if (IsPrintable(keyInfo))
+            if (KeyClasses.IsPrintable(keyInfo))
             {
                 if (KeyIsValid(keyInfo))
                 {
@@ -133,48 +135,48 @@ namespace MSG.Console
                     view.RedrawEditor(buffer.Text, buffer.Point);
                 }
             }
-            else if (IsShiftEnter(keyInfo))
+            else if (KeyClasses.IsShiftEnter(keyInfo))
             {
                 buffer.InsertChar('\n');
                 view.RedrawEditor(buffer.Text, buffer.Point);
             }
-            else if (IsBackspace(keyInfo))
+            else if (KeyClasses.IsBackspace(keyInfo))
             {
                 buffer.RetreatPoint();
                 buffer.DeleteChar();
                 view.RedrawEditor(buffer.Text, buffer.Point);
             }
-            else if (IsDown(keyInfo))
+            else if (KeyClasses.IsDown(keyInfo))
             {
                 int point = view.CursorDown(buffer.Point);
                 buffer.MovePoint(point);
             }
-            else if (IsLeft(keyInfo))
+            else if (KeyClasses.IsLeft(keyInfo))
             {
                 int point = view.CursorLeft(buffer.Point);
                 buffer.MovePoint(point);
             }
-            else if (IsRight(keyInfo))
+            else if (KeyClasses.IsRight(keyInfo))
             {
                 int point = view.CursorRight(buffer.Point);
                 buffer.MovePoint(point);
             }
-            else if (IsUp(keyInfo))
+            else if (KeyClasses.IsUp(keyInfo))
             {
                 int point = view.CursorUp(buffer.Point);
                 buffer.MovePoint(point);
             }
-            else if (IsDelete(keyInfo))
+            else if (KeyClasses.IsDelete(keyInfo))
             {
                 buffer.DeleteChar();
                 view.RedrawEditor(buffer.Text, buffer.Point);
             }
-            else if (IsEnd(keyInfo))
+            else if (KeyClasses.IsEnd(keyInfo))
             {
                 int point = view.CursorEnd();
                 buffer.MovePoint(point);
             }
-            else if (IsEnter(keyInfo))
+            else if (KeyClasses.IsEnter(keyInfo))
             {
                 // ignore enter on empty line
                 if (!buffer.IsEmpty())
@@ -183,28 +185,28 @@ namespace MSG.Console
                     done = true;
                 }
             }
-            else if (IsEscape(keyInfo))
+            else if (KeyClasses.IsEscape(keyInfo))
             {
                 buffer.Delete();
                 view.ExitEditor();
                 done = true;
             }
-            else if (IsHome(keyInfo))
+            else if (KeyClasses.IsHome(keyInfo))
             {
                 int point = view.CursorHome();
                 buffer.MovePoint(point);
             }
-            else if (IsCtrlLeft(keyInfo))
+            else if (KeyClasses.IsCtrlLeft(keyInfo))
             {
                 buffer.WordBack();
                 view.RedrawEditor(buffer.Text, buffer.Point);
             }
-            else if (IsCtrlRight(keyInfo))
+            else if (KeyClasses.IsCtrlRight(keyInfo))
             {
                 buffer.WordForward();
                 view.RedrawEditor(buffer.Text, buffer.Point);
             }
-            else if (IsPause(keyInfo))
+            else if (KeyClasses.IsPause(keyInfo))
             {
                 done = true;
             }

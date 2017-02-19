@@ -1,15 +1,15 @@
 ﻿//
-// MSG/Console/Editor/KeyClassification.cs
+// MSG/Console/EditorAux/KeyClasses.cs
 //
 
 using System;
 
-namespace MSG.Console
+namespace MSG.Console.EditorAux
 {
-    public partial class Editor
+    public class KeyClasses
     {
         /// <summary>
-        ///   Returns true if the keypress had any modifiers.
+        /// Returns true if the keypress had any modifiers.
         /// </summary>
         public static bool AnyModifiers(ConsoleKeyInfo keyInfo)
         {
@@ -19,7 +19,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress was modified by alt or ctrl.
+        /// Returns true if the keypress was modified by alt or ctrl.
         /// </summary>
         public static bool IsAltedOrCtrled(ConsoleKeyInfo keyInfo)
         {
@@ -28,7 +28,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress deletes the char before the cursor.
+        /// Returns true if the keypress deletes the char before the cursor.
         /// </summary>
         public static bool IsBackspace(ConsoleKeyInfo keyInfo)
         {
@@ -36,7 +36,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress was modified by ctrl.
+        /// Returns true if the keypress was modified by ctrl.
         /// </summary>
         public static bool IsCtrled(ConsoleKeyInfo keyInfo)
         {
@@ -44,7 +44,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress moves the cursor one word left.
+        /// Returns true if the keypress moves the cursor one word left.
         /// </summary>
         public static bool IsCtrlLeft(ConsoleKeyInfo keyInfo)
         {
@@ -52,7 +52,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress moves the cursor one word right.
+        /// Returns true if the keypress moves the cursor one word right.
         /// </summary>
         public static bool IsCtrlRight(ConsoleKeyInfo keyInfo)
         {
@@ -60,7 +60,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress moves the cursor one line down.
+        /// Returns true if the keypress moves the cursor one line down.
         /// </summary>
         public static bool IsDown(ConsoleKeyInfo keyInfo)
         {
@@ -68,7 +68,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress moves the cursor one char left.
+        /// Returns true if the keypress moves the cursor one char left.
         /// </summary>
         public static bool IsLeft(ConsoleKeyInfo keyInfo)
         {
@@ -76,7 +76,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress moves the cursor one char right.
+        /// Returns true if the keypress moves the cursor one char right.
         /// </summary>
         public static bool IsRight(ConsoleKeyInfo keyInfo)
         {
@@ -84,7 +84,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress moves the cursor one line up.
+        /// Returns true if the keypress moves the cursor one line up.
         /// </summary>
         public static bool IsUp(ConsoleKeyInfo keyInfo)
         {
@@ -92,7 +92,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress deletes the char at the cursor.
+        /// Returns true if the keypress deletes the char at the cursor.
         /// </summary>
         public static bool IsDelete(ConsoleKeyInfo keyInfo)
         {
@@ -100,7 +100,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress moves the cursor to the end of line.
+        /// Returns true if the keypress moves the cursor to the end of line.
         /// </summary>
         public static bool IsEnd(ConsoleKeyInfo keyInfo)
         {
@@ -108,7 +108,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress signals that the user is done.
+        /// Returns true if the keypress signals that the user is done.
         /// </summary>
         public static bool IsEnter(ConsoleKeyInfo keyInfo)
         {
@@ -116,7 +116,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress signals that the user cancelled.
+        /// Returns true if the keypress signals that the user cancelled.
         /// </summary>
         public static bool IsEscape(ConsoleKeyInfo keyInfo)
         {
@@ -124,7 +124,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress moves the cursor to the beginning of line.
+        /// Returns true if the keypress moves the cursor to the beginning of line.
         /// </summary>
         public static bool IsHome(ConsoleKeyInfo keyInfo)
         {
@@ -133,7 +133,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   I need a way to break out of the input loop without quitting the editor
+        /// I need a way to break out of the input loop without quitting the editor
         /// </summary>
         public static bool IsPause(ConsoleKeyInfo keyInfo)
         {
@@ -141,7 +141,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Returns true if the keypress(es) result in a printable character.
+        /// Returns true if the keypress(es) result in a printable character.
         /// </summary>
         public static bool IsPrintable(ConsoleKeyInfo keyInfo)
         {
@@ -218,14 +218,14 @@ namespace MSG.Console
             return false;
         }
         /// <summary>
-        ///   Return true if Shift-Enter was pressed.
+        /// Return true if Shift-Enter was pressed.
         /// </summary>
         public static bool IsShiftEnter(ConsoleKeyInfo keyInfo)
         {
             return keyInfo.Key == ConsoleKey.Enter && IsShifted(keyInfo);
         }
         /// <summary>
-        ///   Returns true if the key was pressed with the shift key.
+        /// Returns true if the key was pressed with the shift key.
         /// </summary>
         public static bool IsShifted(ConsoleKeyInfo keyInfo)
         {

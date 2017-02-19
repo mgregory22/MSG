@@ -3,6 +3,7 @@
 //
 
 using MSG.IO;
+using MSG.Patterns;
 using MSG.Types.String;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,10 @@ using System.Collections.Generic;
 namespace MSG.Console
 {
     /// <summary>
-    ///   The responsibilities of this class are:
-    ///   1. Organize menu items together to create a menu and generate its display.
-    ///   2. Receive a user-entered shortcut and perform the action(s)
-    ///      of the corresponding menu item.
+    /// The responsibilities of this class are:
+    /// 1. Organize menu items together to create a menu and generate its display.
+    /// 2. Receive a user-entered shortcut and perform the action(s)
+    ///    of the corresponding menu item.
     /// </summary>
     public class Menu
     {
@@ -22,19 +23,31 @@ namespace MSG.Console
         private Print print;
         private Read read;
         private string title;
+        private MenuItem helpItem;
+        private const char helpKey = '?';
 
         /// <summary>
-        ///   Initializes a new menu with the given array of menu items.  The items
-        ///   are displayed in the order given in the array.
+        /// Initializes a new menu with the given array of menu items.  The items
+        /// are displayed in the order given in the array.
         /// </summary>
-        /// <param name="menuItems"></param>
-        public Menu(string title, MenuItem[] menuItems, CharPrompt charPrompt)
+        /// <param name="title">The menu title displayed in prompts and help</param>
+        /// <param name="charPrompt">User prompt and input object</param>
+        public Menu(string title, CharPrompt charPrompt)
         {
             this.title = title;
-            this.menuItems = new List<MenuItem>(menuItems);
             this.charPrompt = charPrompt;
             this.print = charPrompt.Print;
             this.read = charPrompt.Read;
+            this.menuItems = new List<MenuItem>();
+
+            // Menus always have a help item for printing item
+            // keystrokes and descriptions.
+            this.helpItem = new MenuItem(
+                    helpKey,
+                    "Help",
+                    new HelpDialog(this.print, this),
+                    Condition.always
+                );
         }
 
         public void AddMenuItem(MenuItem menuItem)
@@ -42,141 +55,122 @@ namespace MSG.Console
             this.menuItems.Add(menuItem);
         }
 
+        public void AddMenuItems(MenuItem[] menuItems)
+        {
+            this.menuItems.AddRange(menuItems);
+        }
+
         /// <summary>
-        ///   Find the menu item that matches the keystroke.
+        /// Find the menu item that matches the keystroke.
         /// </summary>
         /// <param name="keystroke"></param>
         /// <returns>
-        ///   The menu item of the matching keystroke or null if there was no match.
+        /// The menu item of the matching keystroke or null if there was no match.
         /// </returns>
         public MenuItem FindMatchingItem(char keystroke)
         {
-            foreach (MenuItem menuItem in menuItems)
-            {
-                if (menuItem.DoesMatch(keystroke))
-                {
+            foreach (MenuItem menuItem in menuItems) {
+                if (menuItem.Enabled && menuItem.DoesMatch(keystroke)) {
                     return menuItem;
                 }
+            }
+            // The help item is always available, unless the helpKey
+            // keystroke has been redefined.
+            if (keystroke == helpKey) {
+                return helpItem;
             }
             return null;
         }
 
         /// <summary>
-        ///    Returns the list of menu item keystrokes.
+        /// Returns the number of items in the menu.
         /// </summary>
-        private char[] GetKeystrokeList()
-        {
-            List<char> keystrokeList = new List<char>();
-            foreach (MenuItem menuItem in this.menuItems)
-                keystrokeList.Add(menuItem.Keystroke);
-            return keystrokeList.ToArray();
-        }
-
-        /// <summary>
-        ///   Returns the number of items in the menu.
-        /// </summary>
-        public int ItemCount
-        {
+        public int ItemCount {
             get { return menuItems.Count; }
         }
 
         /// <summary>
-        ///   Performs the menu input/action loop.
+        /// Performs the menu input/action loop.
         /// </summary>
-        public void Loop()
+        public Command.Result Loop()
         {
-            bool done = false;
-            charPrompt.ValidList = GetKeystrokeList();
-            while (!done)
-            {
-                // Seeing the menu every time is annoying
-                //print.String(this.ToString());
-                char? c = charPrompt.PromptAndInput();
-                if (c == null)
-                {
-                    done = true;
-                }
-                else
-                {
-                    MenuItem m = this.FindMatchingItem(c.Value);
-                    try
-                    {
-                        m.Do();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // user has quit
-                        done = true;
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        // Non-fatal error
-                        print.StringNL(ex.Message);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        // Non-fatal error
-                        print.StringNL(ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        // Presumably fatal error
-                        print.StringNL(ex.Message);
-                        done = true;
-                    }
-                }
+            Command.Result result;
+
+            do {
+                // Print a newline to break things up a bit
                 print.Newline();
+
+                // Print menu title
+                print.StringNL(this.Title);
+
+                // Prompt ! for keystroke
+                charPrompt.ValidList = ValidKeys;
+                char c = charPrompt.PromptAndInput();
+
+                // Find menu item that matches keystroke
+                MenuItem m = this.FindMatchingItem(c);
+
+                // Execute command
+                result = m.Do();
+
+                // If result should be printed, print it
+                if (result.IsPrintable) {
+                    print.StringNL(result.ToString());
+                }
+            } while (!result.IsReturnable);
+
+            // Only allow UpMenu to go up a single menu
+            if (result.GetType() == typeof(Command.UpMenu)) {
+                result = Command.ok;
             }
+
+            return result;
         }
 
         /// <summary>
-        ///   String to use as the prompt.
+        /// String to use as the prompt.
         /// </summary>
-        public string Prompt
-        {
+        public string Prompt {
             get { return charPrompt.Prompt; }
             set { charPrompt.Prompt = value; }
         }
 
         /// <summary>
-        ///   Title of the menu.
+        /// Title of the menu.
         /// </summary>
-        public string Title
-        {
+        public string Title {
             get { return title; }
             set { title = value; }
         }
 
         /// <summary>
-        ///   Returns a string of the entire menu.
+        /// Returns a string of the entire menu.
         /// </summary>
         /// <returns>String representation of the menu</returns>
         public override string ToString()
         {
-            string s = Draw.UnderlinedText(title);
-            foreach (MenuItem menuItem in menuItems)
-            {
-                for (int i = 0; i < menuItem.LineCount; i++)
-                {
-                    s += menuItem.ToString(i);
+            string s = "";
+            foreach (MenuItem menuItem in menuItems) {
+                if (menuItem.Enabled) {
+                    s += menuItem.ToString();
                 }
             }
+            s += helpItem.ToString();
             return s;
         }
 
         /// <summary>
-        ///   Returns the list of keystrokes that have corresponding
-        ///   menu items.
+        /// Returns the list of keystrokes that have corresponding
+        /// menu items.
         /// </summary>
-        public char[] ValidKeys
-        {
-            get
-            {
-                char[] validKeys = new char[menuItems.Count];
-                for (int i = 0; i < menuItems.Count; i++)
-                {
+        public char[] ValidKeys {
+            get {
+                char[] validKeys = new char[menuItems.Count + 1];
+                for (int i = 0; i < menuItems.Count; i++) {
                     validKeys[i] = menuItems[i].Keystroke;
                 }
+                // Help is always available
+                validKeys[menuItems.Count] = helpKey;
                 return validKeys;
             }
             private set { }

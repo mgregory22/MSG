@@ -1,5 +1,5 @@
 ﻿//
-// MSGTest/Patterns/TestCommand.cs
+// MSGTest/Patterns/TestDialogCommand.cs
 //
 
 using MSG.IO;
@@ -17,19 +17,16 @@ namespace MSGTest.Patterns
         {
         }
 
-        public override void Do()
+        public override Result Do()
         {
             doCount++;
+            return new Ok();
         }
 
-        public override void Undo()
+        public override Result Undo()
         {
             undoCount++;
-        }
-
-        public override bool IsEnabled()
-        {
-            return true;
+            return new Ok();
         }
     }
 }

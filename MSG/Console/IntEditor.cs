@@ -13,7 +13,7 @@ namespace MSG.Console
         protected static Regex intRe = new Regex(@"^-?[0-9]+$");
 
         /// <summary>
-        ///   Initialize print and read objects.
+        /// Initialize print and read objects.
         /// </summary>
         /// <param name="print">Used to print the prompt</param>
         /// <param name="read">Used to read the user input</param>
@@ -23,10 +23,12 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   True if input is an integer.
+        /// True if input is an integer.
         /// </summary>
         public override bool InputIsValid(string input)
         {
+            // If input is null, then user hit escape, so stop looping.
+            if (input == null) return true;
             return intRe.IsMatch(input);
         }
 
@@ -37,7 +39,7 @@ namespace MSG.Console
         }
 
         /// <summary>
-        ///   Prints a prompt and gets an int from the user
+        /// Prints a prompt and gets an int from the user
         /// </summary>
         /// <param name="prompt">The prompt string</param>
         public int? IntPrompt(string prompt = "# ")

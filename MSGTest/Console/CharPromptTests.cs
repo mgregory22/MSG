@@ -33,9 +33,8 @@ namespace MSGTest.Console
             // A valid key needs to be sent to terminate the prompt loop
             read.PushChar(invalidKey);
             read.PushChar(validKey);
-            char? gotKey = prompt.PromptAndInput();
-            Assert.IsNotNull(gotKey);
-            Assert.AreEqual(prompt.LastPrompt + "X\n" + CharPrompt.helpMsg + "\n" + prompt.LastPrompt + "a\n", print.Output);
+            char gotKey = prompt.PromptAndInput();
+            Assert.AreEqual(prompt.Prompt + "X\n" + CharPrompt.helpMsg + "\n" + prompt.Prompt + "a\n", print.Output);
             // Might as well test this again
             Assert.AreEqual(validKey, gotKey);
         }
@@ -45,9 +44,8 @@ namespace MSGTest.Console
         {
             char validKey = 'a';
             read.PushChar(validKey);
-            char? gotKey = prompt.PromptAndInput();
-            Assert.IsNotNull(gotKey);
-            Assert.AreEqual(prompt.LastPrompt + "a\n", print.Output);
+            char gotKey = prompt.PromptAndInput();
+            Assert.AreEqual(prompt.Prompt + "a\n", print.Output);
             Assert.AreEqual(validKey, gotKey);
             print.ClearOutput();
         }
@@ -57,8 +55,8 @@ namespace MSGTest.Console
         {
             char escapeKey = '\x1B';
             read.PushChar(escapeKey);
-            char? gotKey = prompt.PromptAndInput();
-            Assert.IsNull(gotKey);
+            char gotKey = prompt.PromptAndInput();
+            Assert.AreEqual(gotKey, '\x1B');
         }
     }
 }

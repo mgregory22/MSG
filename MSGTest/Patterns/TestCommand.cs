@@ -15,14 +15,16 @@ namespace MSGTest.Patterns
         {
         }
 
-        public override void Do()
+        public override Result Do()
         {
             doCount++;
+            return new Ok();
         }
 
-        public override void Undo()
+        public override Result Undo()
         {
             undoCount++;
+            return new Ok();
         }
     }
 }
