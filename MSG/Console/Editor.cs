@@ -34,6 +34,8 @@ namespace MSG.Console
 
         /// <summary>
         /// Gets one or more lines of input from the user.
+        /// If user hits escape or enters a blank line, this
+        /// method returns null.
         /// </summary>
         public string GetAndProcessKeys()
         {
@@ -44,7 +46,7 @@ namespace MSG.Console
                 keyInfo = read.GetNextKey();
                 done = ProcessKey(keyInfo, buffer, view);
             }
-            return buffer == null ? null : buffer.ToString();
+            return string.IsNullOrEmpty(buffer.Text) ? null : buffer.ToString();
         }
 
         /// <summary>
@@ -81,6 +83,7 @@ namespace MSG.Console
 
         /// <summary>
         /// Displays the prompt and reads a string.
+        /// Esc key aborts.
         /// </summary>
         /// <returns>
         /// The string entered by the user
@@ -178,12 +181,8 @@ namespace MSG.Console
             }
             else if (KeyClasses.IsEnter(keyInfo))
             {
-                // ignore enter on empty line
-                if (!buffer.IsEmpty())
-                {
-                    view.ExitEditor();
-                    done = true;
-                }
+                view.ExitEditor();
+                done = true;
             }
             else if (KeyClasses.IsEscape(keyInfo))
             {

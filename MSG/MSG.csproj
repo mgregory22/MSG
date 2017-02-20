@@ -45,7 +45,7 @@
     <Compile Include="Patterns\Conditions\CanRedo.cs" />
     <Compile Include="Patterns\Conditions\CanUndo.cs" />
     <Compile Include="Patterns\DialogCommand.cs" />
-    <Compile Include="Types\Tree\Tree.cs" />
+    <Compile Include="Types\Dir\Dir.cs" />
     <Compile Include="Patterns\UndoManager.cs" />
     <Compile Include="Types\Array\EndlessArray.cs" />
     <Compile Include="Types\String\Draw.cs" />

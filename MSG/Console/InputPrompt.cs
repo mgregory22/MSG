@@ -16,6 +16,7 @@ namespace MSG.Console
         protected Print print;
         protected string prompt;
         protected Read read;
+        protected string pausePrompt;
 
         /// <summary>
         /// Initialize a prompt with message, print and read objects.
@@ -28,6 +29,7 @@ namespace MSG.Console
             this.print = print;
             this.read = read;
             this.prompt = prompt;
+            this.pausePrompt = "Press a key";
         }
 
         /// <summary>
@@ -35,8 +37,17 @@ namespace MSG.Console
         /// </summary>
         public void Pause()
         {
-            print.String("Press a key");
+            print.String(PausePrompt);
             read.GetNextChar(true);
+        }
+
+        public string PausePrompt {
+            get {
+                return pausePrompt;
+            }
+            set {
+                pausePrompt = value;
+            }
         }
 
         /// <summary>

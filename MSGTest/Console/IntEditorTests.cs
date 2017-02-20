@@ -46,5 +46,23 @@ namespace MSGTest.Console
             input = editor.IntPrompt();
             Assert.AreEqual(0, input);
         }
+
+        [Test]
+        public void TestEscapeAbortsInput()
+        {
+            // Provide some input then press Esc
+            read.PushString("12");
+            read.PushEscape();
+            input = editor.IntPrompt();
+            Assert.IsNull(input);
+        }
+
+        [Test]
+        public void TestEmptyInputReturnsNull()
+        {
+            read.PushEnter();
+            input = editor.IntPrompt();
+            Assert.IsNull(input);
+        }
     }
 }
