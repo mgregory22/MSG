@@ -72,7 +72,7 @@
     <Compile Include="Console\CharPromptTests.cs" />
     <Compile Include="Console\EditorAux\BufferTests.cs" />
     <Compile Include="Console\IntEditorTests.cs" />
-    <Compile Include="Patterns\TestDialogCommand.cs" />
+    <Compile Include="Patterns\TestDlgCmd.cs" />
     <Compile Include="Patterns\TestUndoManager.cs" />
     <Compile Include="Types\Array\EndlessArrayTests.cs" />
     <Compile Include="Types\Dir\DirTests.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="Console\EditorAux\WordWrapperTests.cs" />
     <Compile Include="IO\TestPrint.cs" />
     <Compile Include="IO\TestRead.cs" />
-    <Compile Include="Patterns\TestCommand.cs" />
+    <Compile Include="Patterns\TestCmd.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Console\MenuTests.cs" />
     <Compile Include="Console\InputPromptTests.cs" />

@@ -31,7 +31,8 @@ namespace MSG.Types.Dir
     /// </summary>
     public class Dir<T> : IEnumerable
     {
-        public List<Node<T>> items;
+        protected List<Node<T>> items;
+        protected Dir<T> parent;
 
         #region Enumerator
 
@@ -73,8 +74,8 @@ namespace MSG.Types.Dir
 
         public Dir()
         {
-            // Create an initial, parent, list of T.
             this.items = new List<Node<T>>();
+            this.parent = null;
         }
 
         /// <summary>
@@ -117,7 +118,7 @@ namespace MSG.Types.Dir
         /// Dir enumerator
         /// </summary>
         /// <returns></returns>
-        IEnumerator IEnumerable.GetEnumerator()
+        public IEnumerator GetEnumerator()
         {
             return new Enumerator(items);
         }
@@ -188,6 +189,15 @@ namespace MSG.Types.Dir
             items.Insert(destIndex, item);
         }
 
+        public Dir<T> Parent {
+            get {
+                return parent;
+            }
+            set {
+                this.parent = value;
+            }
+        }
+
         /// <summary>
         /// Deletes an item by reference from the dir
         /// </summary>
@@ -213,12 +223,13 @@ namespace MSG.Types.Dir
         }
 
         /// <summary>
-        /// Assigns a subdir to an item
+        /// Assigns a subdir to an item and assigns its
+        /// parent to the current dir.
         /// </summary>
         public virtual void SetSubdir(int index, Dir<T> subdir)
         {
             items[index].subdir = subdir;
+            subdir.Parent = this;
         }
-
     }
 }

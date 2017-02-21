@@ -4,7 +4,7 @@
 
 namespace MSG.Patterns.Conditions
 {
-    public class CanUndo : Condition
+    public class CanUndo : Cond
     {
         protected UndoManager undoManager;
 

@@ -1,7 +1,5 @@
 ﻿//
-// MSG/Patterns/DialogCommand.cs
-//
-
+// MSG/Patterns/DlgCmd.cs
 //
 
 using MSG.IO;
@@ -9,7 +7,7 @@ using MSG.IO;
 namespace MSG.Patterns
 {
     /// <summary>
-    /// A DialogCommand is an interactive command factory pattern:
+    /// A DlgCmd is an interactive command factory pattern:
     /// the user enters information and out comes a new command
     /// object initialized with that user-entered data.
     /// 
@@ -23,32 +21,27 @@ namespace MSG.Patterns
     /// call its Do() method, and push the command object on the undo
     /// stack.
     /// </summary>
-    public abstract class DialogCommand : Command
+    public abstract class DlgCmd
     {
-        protected Print print;
-        protected Read read;
-        protected UndoManager undoManager;
-        protected Command command;
+        /// <summary>
+        /// The command to be performed
+        /// </summary>
+        protected Cmd cmd;
 
         /// <summary>
-        /// Sets up the basic facilities of a DialogCommand: output, input, and undo.
+        /// Input-output object
         /// </summary>
-        /// <param name="print">Print destination</param>
-        /// <param name="read">Read source, which can be null if the
-        /// command just prints or signals and doesn't need to read anything</param>
-        /// <param name="undoManager">The undo queue manager, which can be omitted
-        /// if the command can't be undone</param>
-        public DialogCommand(Print print, Read read = null, UndoManager undoManager = null)
+        protected Io io;
+
+        public DlgCmd(Io io)
         {
-            this.print = print;
-            this.read = read;
-            this.undoManager = undoManager;
+            this.io = io;
         }
 
         /// <summary>
         /// Creates a command object to call Do() on (see CreateAndDo() below).
         /// </summary>
-        public virtual Command Create()
+        public virtual Cmd Create()
         {
             return null;
         }
@@ -57,42 +50,34 @@ namespace MSG.Patterns
         /// The dialog is to be executed here.
         /// </summary>
         /// <remarks>
-        /// All classes that inherit from DialogCommand should call
-        /// this at the end of their Do() to execute the command,
-        /// add it to the undo list, and save the printed prompt
-        /// text for testing the output.
+        /// All classes that inherit from DlgCmd should call
+        /// this at the end of their Do() to perform the process
+        /// and add it to the undo list.
         /// </remarks>
-        public override Result Do()
+        public virtual Cmd.Result Do(Io io)
         {
             // If the command already exists, then it has
             // already been done and can't be redone.
-            if (command != null)
+            if (cmd != null)
             {
-                return Command.cannotDo;
+                return Cmd.CANTDO;
             }
 
             // Attempt to create the command object, by
             // whatever means defined in the derived class.
-            command = Create();
+            cmd = Create();
 
             // If the command creation failed, it's ok, just return.
-            if (command == null) {
-                return Command.ok;
+            if (cmd == null) {
+                return Cmd.OK;
             }
 
             // Perform the command.
-            Result result = command.Do();
-
-            // If the command is undoable, add it to the undo manager
-            // queue.
-            if (undoManager != null)
-            {
-                undoManager.Do(command);
-            }
+            Cmd.Result result = cmd.Do();
 
             // I'm not sure? This means Do() can be called repeatedly,
             // but I don't think that's right.
-            command = null;
+            cmd = null;
 
             return result;
         }
@@ -102,13 +87,13 @@ namespace MSG.Patterns
     /// The HelpDialog object just prints the ToString() output of
     /// whatever object you send it.
     /// 
-    /// Also acts as an example of how to construct a DialogCommand.
+    /// Also acts as an example of how to construct a DlgCmd.
     /// 
-    /// First, a Command class needs to be defined for HelpDialog to
+    /// First, a Cmd class needs to be defined for HelpDialog to
     /// construct.  All the parameters that Do() needs to function
     /// are passed in via the constructor.
     /// </summary>
-    public class Help : Command
+    public class Help : Cmd
     {
         Print print;
         object target;
@@ -122,22 +107,22 @@ namespace MSG.Patterns
         public override Result Do()
         {
             print.String(target.ToString());
-            return Command.ok;
+            return Cmd.OK;
         }
     }
 
-    public class HelpDialog : DialogCommand
+    public class HelpDlgCmd : DlgCmd
     {
         object target;
 
-        public HelpDialog(Print print, object target) : base(print, null, null)
+        public HelpDlgCmd(Io io, object target) : base(io)
         {
             this.target = target;
         }
 
-        public override Command Create()
+        public override Cmd Create()
         {
-            return new Help(print, target);
+            return new Help(io.print, target);
         }
     }
 

@@ -14,7 +14,8 @@ namespace MSGTest.Console
     {
         class InputPromptDerivative : InputPrompt
         {
-            public InputPromptDerivative(Print print, Read read, string prompt = "> ") : base(print, read, prompt)
+            public InputPromptDerivative(string prompt = "> ")
+                : base(prompt)
             {
             }
         }
@@ -23,20 +24,16 @@ namespace MSGTest.Console
         string promptMsg = "> ";
         TestPrint print;
         TestRead read;
+        Io io;
 
         [SetUp]
         public void Initialize()
         {
             print = new TestPrint();
-            read = new TestRead(print);
+            read = new TestRead();
+            io = new Io(print, read);
             // InputPrompt is abstract, so a derived class must be used to test
-            prompt = new InputPromptDerivative(print, read, promptMsg);
-        }
-
-        [Test]
-        public void TestKeyPromptStoresPrint()
-        {
-            Assert.AreEqual(print, prompt.Print);
+            prompt = new InputPromptDerivative(promptMsg);
         }
 
         [Test]
@@ -46,17 +43,11 @@ namespace MSGTest.Console
         }
 
         [Test]
-        public void TestKeyPromptStoresRead()
-        {
-            Assert.AreEqual(read, prompt.Read);
-        }
-
-        [Test]
         public void TestPause()
         {
             // Push a key to get past the prompt
             read.PushEnter();
-            prompt.Pause();
+            prompt.Pause(io);
             Assert.AreEqual(print.Output, prompt.PausePrompt);
         }
 
@@ -66,7 +57,7 @@ namespace MSGTest.Console
             prompt.PausePrompt = "Hit any key to continue";
             // Push a key to get past the prompt
             read.PushEnter();
-            prompt.Pause();
+            prompt.Pause(io);
             Assert.AreEqual(print.Output, prompt.PausePrompt);
         }
     }

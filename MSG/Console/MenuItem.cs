@@ -2,6 +2,7 @@
 // MSG/Console/MenuItem.cs
 //
 
+using MSG.IO;
 using MSG.Patterns;
 using System.Collections.Generic;
 
@@ -19,33 +20,33 @@ namespace MSG.Console
     {
         protected char keystroke;
         protected string description;
-        protected DialogCommand dialogCommand;
+        protected DlgCmd dlgCmd;
         protected Menu subMenu;
-        protected Condition enableCondition;
+        protected Cond enableCond;
         protected int maxWidth;
         protected List<string> lines;
 
         /// <summary>
-        /// Initializes a menu item object.
+        /// Initializes a menu item object
         /// </summary>
         /// <param name="keystroke">
-        /// Keystroke to activate command.
+        /// Keystroke to activate command
         /// </param>
         /// <param name="description">
-        /// Description of the command.
+        /// Description of the command
         /// </param>
-        /// <param name="dialogCommand">
-        /// Command to be performed by the Do() call.
+        /// <param name="enableCond">
+        /// Functoid to determine whether to enable the menu item
         /// </param>
-        /// <param name="enableCondition">
-        /// Functoid to determine whether to enable the menu item.
+        /// <param name="dlgCmd">
+        /// Dialog to run when item is activated
         /// </param>
-        public MenuItem(char keystroke, string description, DialogCommand dialogCommand, Condition enableCondition)
+        public MenuItem(char keystroke, string description, Cond enableCond, DlgCmd dlgCmd)
         {
             this.keystroke = keystroke;
             this.description = description;
-            this.dialogCommand = dialogCommand;
-            this.enableCondition = enableCondition;
+            this.dlgCmd = dlgCmd;
+            this.enableCond = enableCond;
             this.maxWidth = 80;
             this.lines = new List<string>();
             UpdateLines();
@@ -60,18 +61,18 @@ namespace MSG.Console
         /// <param name="description">
         /// Description of the command.
         /// </param>
-        /// <param name="dialogCommand">
-        /// Command to be performed by the Do() call.
+        /// <param name="script">
+        /// Cmd to be performed by the Do() call.
         /// </param>
-        /// <param name="enableCondition">
+        /// <param name="enableCond">
         /// Functoid to determine whether to enable the menu item.
         /// </param>
-        public MenuItem(char keystroke, string description, Menu subMenu, Condition enableCondition)
+        public MenuItem(char keystroke, string description, Cond enableCond, Menu subMenu)
         {
             this.keystroke = keystroke;
             this.description = description;
             this.subMenu = subMenu;
-            this.enableCondition = enableCondition;
+            this.enableCond = enableCond;
             this.maxWidth = 80;
             this.lines = new List<string>();
             UpdateLines();
@@ -81,10 +82,10 @@ namespace MSG.Console
         /// An object that encapsulates the action to perform when
         /// the menu item is selected.
         /// </summary>
-        public virtual DialogCommand DialogCommand
+        public virtual DlgCmd DlgCmd
         {
-            get { return dialogCommand; }
-            set { dialogCommand = value; }
+            get { return dlgCmd; }
+            set { dlgCmd = value; }
         }
 
         /// <summary>
@@ -103,15 +104,13 @@ namespace MSG.Console
         /// <summary>
         /// Performs the action associated with the menu item.
         /// </summary>
-        public virtual Command.Result Do()
+        public virtual Cmd.Result Do(Io io)
         {
-            // Should Menu be a subclass of DialogCommand???
-            // Should MenuItem be a subclass of DialogCommand???
-            if (dialogCommand != null) {
-                return dialogCommand.Do();
+            if (dlgCmd != null) {
+                return dlgCmd.Do(io);
             }
             if (subMenu != null) {
-                return subMenu.Loop();
+                return subMenu.Loop(io);
             }
             throw new System.InvalidOperationException("MenuItem is invalid");
         }
@@ -130,14 +129,14 @@ namespace MSG.Console
         }
 
         /// <summary>
-        /// True if the Test() of the menu item's enableCondition is true.
+        /// True if the Test() of the menu item's enableCond is true.
         /// The Menu class uses this to determine whether to display and check
         /// the keystroke of the menu item.
         /// </summary>
         public bool Enabled {
             get
             {
-                return this.enableCondition.Test();
+                return this.enableCond.Test();
             }
         }
 

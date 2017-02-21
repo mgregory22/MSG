@@ -13,22 +13,14 @@ namespace MSG.Console
         protected static Regex intRe = new Regex(@"^-?[0-9]+$");
 
         /// <summary>
-        /// Initialize print and read objects.
-        /// </summary>
-        /// <param name="print">Used to print the prompt</param>
-        /// <param name="read">Used to read the user input</param>
-        public IntEditor(Print print, Read read)
-            : base(print, read)
-        {
-        }
-
-        /// <summary>
         /// True if input is an integer.
         /// </summary>
-        public override bool InputIsValid(string input)
+        public override bool InputIsValid(Io io, string input)
         {
             // If input is null, then user hit escape, so stop looping.
-            if (input == null) return true;
+            if (input == null) {
+                return true;
+            }
             return intRe.IsMatch(input);
         }
 
@@ -42,22 +34,26 @@ namespace MSG.Console
         /// Prints a prompt and gets an int from the user
         /// </summary>
         /// <param name="prompt">The prompt string</param>
-        public int? IntPrompt(string prompt = "# ")
+        public int? IntPrompt(Io io, string prompt = "# ")
         {
-            string input = base.StringPrompt(prompt);
-            if (input == null) return null;
+            string input = base.StringPrompt(io, prompt);
+            if (input == null) {
+                return null;
+            }
             return Convert.ToInt32(input);
         }
 
-        public int? RangePrompt(int min, int max, string prompt = "# ")
+        public int? RangePrompt(Io io, int min, int max, string prompt = "# ")
         {
             int? input;
-            do
-            {
-                input = IntPrompt(prompt);
-                if (input == null) return null;
-                if (input < min || input > max)
-                    print.StringNL(String.Format("Enter a number between {0} and {1} (Esc to quit)", min, max));
+            do {
+                input = IntPrompt(io, prompt);
+                if (input == null) {
+                    return null;
+                }
+                if (input < min || input > max) {
+                    io.print.StringNL(String.Format("Enter a number between {0} and {1} (Esc to quit)", min, max));
+                }
             } while (input < min || input > max);
             return input;
         }

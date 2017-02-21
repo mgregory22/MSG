@@ -15,35 +15,21 @@ namespace MSG.Console
     public class Editor
     {
         protected Buffer buffer;
-        protected Print print;
-        protected Read read;
         protected View view;
         protected string lastPrompt;
-
-        /// <param name="print">
-        /// Object used for printing
-        /// </param>
-        /// <param name="read">
-        /// Object used for reading
-        /// </param>
-        public Editor(Print print, Read read)
-        {
-            this.print = print;
-            this.read = read;
-        }
 
         /// <summary>
         /// Gets one or more lines of input from the user.
         /// If user hits escape or enters a blank line, this
         /// method returns null.
         /// </summary>
-        public string GetAndProcessKeys()
+        public string GetAndProcessKeys(Io io)
         {
             bool done = false;
             ConsoleKeyInfo keyInfo;
             while (!done)
             {
-                keyInfo = read.GetNextKey();
+                keyInfo = io.read.GetNextKey();
                 done = ProcessKey(keyInfo, buffer, view);
             }
             return string.IsNullOrEmpty(buffer.Text) ? null : buffer.ToString();
@@ -56,7 +42,7 @@ namespace MSG.Console
         /// <param name="input">
         /// Complete input the user entered in
         /// </param>
-        virtual public bool InputIsValid(string input)
+        virtual public bool InputIsValid(Io io, string input)
         {
             return true;
         }
@@ -88,24 +74,24 @@ namespace MSG.Console
         /// <returns>
         /// The string entered by the user
         /// </returns>
-        virtual public string StringPrompt(string prompt = "$ ")
+        virtual public string StringPrompt(Io io, string prompt = "$ ")
         {
             string s;
             this.buffer = new Buffer();
             do
             {
-                PrintPrompt(prompt);
-                s = GetAndProcessKeys();
-            } while (!InputIsValid(s));
+                PrintPrompt(io, prompt);
+                s = GetAndProcessKeys(io);
+            } while (!InputIsValid(io, s));
             return s;
         }
 
-        public void PrintPrompt(string prompt)
+        public void PrintPrompt(Io io, string prompt)
         {
-            print.String(prompt);
+            io.print.String(prompt);
             // The view has an internal startCursorPos property
             // that needs to be set after the prompt is printed.
-            this.view = new View(buffer, print);
+            this.view = new View(buffer, io.print);
             // For testing
             this.lastPrompt = prompt;
         }

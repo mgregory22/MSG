@@ -2,21 +2,19 @@
 // MSG/Patterns/UndoManager.cs
 //
 
-using System;
 using System.Collections.Generic;
-using MSG.Patterns;
 
 namespace MSG.Patterns
 {
     public class UndoManager
     {
-        Stack<Command> undoStack;
-        Stack<Command> redoStack;
+        Stack<UnCmd> undoStack;
+        Stack<UnCmd> redoStack;
 
         public UndoManager()
         {
-            this.undoStack = new Stack<Command>();
-            this.redoStack = new Stack<Command>();
+            this.undoStack = new Stack<UnCmd>();
+            this.redoStack = new Stack<UnCmd>();
         }
 
         /// <remarks>
@@ -32,33 +30,38 @@ namespace MSG.Patterns
             return undoStack.Count > 0;
         }
 
-        public virtual void Do(Command command)
+        public virtual void Do(Cmd cmd)
         {
-            undoStack.Push(command);
             redoStack.Clear();
         }
 
-        public virtual Command.Result Redo()
+        public virtual void Do(UnCmd cmd)
+        {
+            undoStack.Push(cmd);
+            redoStack.Clear();
+        }
+
+        public virtual Cmd.Result Redo()
         {
             if (!CanRedo())
             {
-                return new Command.NothingToRedo();
+                return new UnCmd.CantRedo();
             }
-            Command command = redoStack.Pop();
-            Command.Result result = command.Do();
-            undoStack.Push(command);
+            UnCmd cmd = redoStack.Pop();
+            Cmd.Result result = cmd.Do();
+            undoStack.Push(cmd);
             return result;
         }
 
-        public virtual Command.Result Undo()
+        public virtual Cmd.Result Undo()
         {
             if (!CanUndo())
             {
-                return new Command.NothingToUndo();
+                return UnCmd.CANTUNDO;
             }
-            Command command = undoStack.Pop();
-            Command.Result result = command.Undo();
-            redoStack.Push(command);
+            UnCmd cmd = undoStack.Pop();
+            Cmd.Result result = cmd.Undo();
+            redoStack.Push(cmd);
             return result;
         }
     }

@@ -41,10 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Console\IntEditor.cs" />
+    <Compile Include="IO\Io.cs" />
+    <Compile Include="Patterns\DlgUnCmd.cs" />
+    <Compile Include="Patterns\UnCmd.cs" />
     <Compile Include="Patterns\Condition.cs" />
     <Compile Include="Patterns\Conditions\CanRedo.cs" />
     <Compile Include="Patterns\Conditions\CanUndo.cs" />
-    <Compile Include="Patterns\DialogCommand.cs" />
+    <Compile Include="Patterns\DlgCmd.cs" />
     <Compile Include="Types\Dir\Dir.cs" />
     <Compile Include="Patterns\UndoManager.cs" />
     <Compile Include="Types\Array\EndlessArray.cs" />
@@ -61,7 +64,7 @@
     <Compile Include="IO\Print.cs" />
     <Compile Include="Console\InputPrompt.cs" />
     <Compile Include="IO\Read.cs" />
-    <Compile Include="Patterns\Command.cs" />
+    <Compile Include="Patterns\Cmd.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\String\Format.cs" />
     <Compile Include="Types\String\Scan.cs" />

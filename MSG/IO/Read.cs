@@ -13,34 +13,20 @@ namespace MSG.IO
     /// </summary>
     public class Read
     {
-        protected Print print;
-
-        /// <summary>
-        /// The read object needs the ability to output the stuff read.
-        /// </summary>
-        /// <param name="print">
-        /// Everything read will be printed with this object, unless that is
-        /// disabled by setting print to null.
-        /// </param>
-        public Read(Print print)
-        {
-            this.print = print;
-        }
-
         /// <summary>
         /// Reads a character from the console (immediately, without the user
         /// hitting enter).
         /// </summary>
-        /// <param name="intercept">
-        /// Suppresses output
+        /// <param name="print">
+        /// Optional output object for echo
         /// </param>
         /// <returns>
         /// Key the user typed
         /// </returns>
-        virtual public char GetNextChar(bool intercept = false)
+        virtual public char GetNextChar(Print print = null)
         {
             ConsoleKeyInfo key = System.Console.ReadKey(true);
-            if (!intercept && print != null) {
+            if (print != null) {
                 print.Char(key.KeyChar);
             }
             return key.KeyChar;
@@ -50,16 +36,16 @@ namespace MSG.IO
         /// Reads a key from the console (immediately, without the user
         /// hitting enter).
         /// </summary>
-        /// <param name="intercept">
-        /// Suppresses output
+        /// <param name="print">
+        /// Optional output object for echo
         /// </param>
         /// <returns>
         /// Key the user typed
         /// </returns>
-        virtual public ConsoleKeyInfo GetNextKey(bool intercept = false)
+        virtual public ConsoleKeyInfo GetNextKey(Print print = null)
         {
             ConsoleKeyInfo key = System.Console.ReadKey(true);
-            if (!intercept && print != null) {
+            if (print != null) {
                 print.Char(key.KeyChar);
             }
             return key;

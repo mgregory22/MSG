@@ -12,8 +12,7 @@ namespace MSGTest.IO
     {
         Queue<ConsoleKeyInfo> keyQueue;
 
-        public TestRead(Print print)
-            : base(print)
+        public TestRead()
         {
             keyQueue = new Queue<ConsoleKeyInfo>();
         }
@@ -472,21 +471,28 @@ namespace MSGTest.IO
             );
         }
 
-        public override char GetNextChar(bool intercept = false)
+        public override char GetNextChar(Print print = null)
         {
-            if (keyQueue.Count == 0) return '\0';
+            if (keyQueue.Count == 0) {
+                return '\0';
+            }
             ConsoleKeyInfo keyInfo = keyQueue.Dequeue();
-            if (!intercept && print != null) print.Char(keyInfo.KeyChar);
+            if (print != null) {
+                print.Char(keyInfo.KeyChar);
+            }
             return keyInfo.KeyChar;
         }
 
-        public override ConsoleKeyInfo GetNextKey(bool intercept = false)
+        public override ConsoleKeyInfo GetNextKey(Print print = null)
         {
             // Sending a pause key exits the input loop
-            if (keyQueue.Count == 0)
+            if (keyQueue.Count == 0) {
                 return new ConsoleKeyInfo('\0', ConsoleKey.Pause, false, false, false);
+            }
             ConsoleKeyInfo keyInfo = keyQueue.Dequeue();
-            if (!intercept && print != null) print.Char(keyInfo.KeyChar);
+            if (print != null) {
+                print.Char(keyInfo.KeyChar);
+            }
             return keyInfo;
         }
 

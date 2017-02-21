@@ -3,6 +3,7 @@
 //
 
 using MSG.Console;
+using MSG.IO;
 using MSGTest.IO;
 using NUnit.Framework;
 using System;
@@ -15,6 +16,7 @@ namespace MSGTest.Console
         Editor editor;
         TestPrint print;
         TestRead read;
+        Io io;
         string input;
 
         [SetUp]
@@ -22,15 +24,16 @@ namespace MSGTest.Console
         {
             print = new TestPrint();
             print.BufferWidth = 8;
-            read = new TestRead(null);
-            editor = new Editor(print, read);
+            read = new TestRead();
+            io = new Io(print, read);
+            editor = new Editor();
         }
 
         [Test]
         public void TestCharWasInsertedIntoBuffer()
         {
             read.PushString("a\r");
-            input = editor.StringPrompt();
+            input = editor.StringPrompt(io);
             Assert.AreEqual("a", input);
         }
 
@@ -38,7 +41,7 @@ namespace MSGTest.Console
         public void TestCharWasEchoedOnScreen()
         {
             read.PushString("a");
-            input = editor.StringPrompt();
+            input = editor.StringPrompt(io);
             Assert.AreEqual(editor.LastPrompt + "a", print.Output);
         }
 
@@ -46,7 +49,7 @@ namespace MSGTest.Console
         public void TestCharsWereInsertedIntoBuffer()
         {
             read.PushString("Word\r");
-            input = editor.StringPrompt();
+            input = editor.StringPrompt(io);
             Assert.AreEqual("Word", input);
         }
 
@@ -54,7 +57,7 @@ namespace MSGTest.Console
         public void TestCharsWereEchoedOnScreen()
         {
             read.PushString("Word");
-            input = editor.StringPrompt();
+            input = editor.StringPrompt(io);
             Assert.AreEqual(editor.LastPrompt + "Word", print.Output);
         }
 
@@ -62,7 +65,7 @@ namespace MSGTest.Console
         public void TestBackspace()
         {
             read.PushString("Word\b");
-            input = editor.StringPrompt();
+            input = editor.StringPrompt(io);
             Assert.AreEqual(editor.LastPrompt + "Word<5^0 <5^0", print.Output);
         }
 
@@ -71,11 +74,11 @@ namespace MSGTest.Console
         {
             // Setup
             read.PushString("23456");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushString("\b");
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<6^0 <6^0", print.Output);
         }
 
@@ -85,11 +88,11 @@ namespace MSGTest.Console
             // Setup
             //             01234567
             read.PushString("Wor wr");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushString("\b");
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<6^0w   <7^0", print.Output);
         }
 
@@ -98,11 +101,11 @@ namespace MSGTest.Console
         {
             // Setup
             read.PushString("2345");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushDownArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("", print.Output);
         }
 
@@ -112,11 +115,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345");
             read.PushLeftArrow(2);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushDownArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("", print.Output);
         }
 
@@ -126,11 +129,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 0123456");
             read.PushLeftArrow(9);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushDownArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<5^1", print.Output);
         }
 
@@ -140,11 +143,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 012345601234");
             read.PushLeftArrow(9);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushDownArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<3^2", print.Output);
         }
 
@@ -155,7 +158,7 @@ namespace MSGTest.Console
             print.ClearOutput();  // clear prompt output
             // Test
             read.PushDownArrow();
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             Assert.AreEqual(editor.LastPrompt, print.Output);
         }
 
@@ -165,11 +168,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345");
             read.PushLeftArrow(3);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushEnd();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<6^0", print.Output);
         }
 
@@ -179,11 +182,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 70123");
             read.PushLeftArrow(3);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushEnd();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<5^1", print.Output);
         }
 
@@ -193,11 +196,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 012345");
             read.PushLeftArrow(9);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushEnd();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<6^0", print.Output);
         }
 
@@ -207,11 +210,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("234 012345");
             read.PushLeftArrow(3);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushEnd();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<6^1", print.Output);
         }
 
@@ -220,11 +223,11 @@ namespace MSGTest.Console
         {
             // Setup
             read.PushString("2345");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushHome();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<2^0", print.Output);
         }
 
@@ -233,11 +236,11 @@ namespace MSGTest.Console
         {
             // Setup
             read.PushString("2345 70123");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushHome();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<0^1", print.Output);
         }
 
@@ -247,11 +250,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 70123");
             read.PushLeftArrow(6);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushHome();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<2^0", print.Output);
         }
 
@@ -261,11 +264,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 70");
             read.PushLeftArrow(2);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushLeftArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<6^0", print.Output);
         }
 
@@ -273,7 +276,7 @@ namespace MSGTest.Console
         public void TestCursorLeftCannotMoveCursorBeforeBeginning()
         {
             read.PushRightArrow();
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             Assert.AreEqual(editor.LastPrompt.Length, print.CursorLeft);
         }
 
@@ -282,11 +285,11 @@ namespace MSGTest.Console
         {
             // Setup
             read.PushString("2345");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushLeftArrow(3);
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<5^0<4^0<3^0", print.Output);
         }
 
@@ -296,11 +299,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("23456 ");
             read.PushLeftArrow();
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushLeftArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<6^0", print.Output);
         }
 
@@ -309,11 +312,11 @@ namespace MSGTest.Console
         {
             // Setup
             read.PushString("2345\n01234");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushLeftArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<4^1", print.Output);
         }
 
@@ -322,11 +325,11 @@ namespace MSGTest.Console
         {
             // Setup
             read.PushString("2345 7012");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushLeftArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<3^1", print.Output);
         }
 
@@ -336,11 +339,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345");
             read.PushLeftArrow(3);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushRightArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<4^0", print.Output);
         }
 
@@ -350,11 +353,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345601234");
             read.PushLeftArrow(6);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushRightArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<0^1", print.Output);
         }
 
@@ -362,7 +365,7 @@ namespace MSGTest.Console
         public void TestCursorRightCannotMoveCursorPastEndOfEmptyBuffer()
         {
             read.PushRightArrow();
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             Assert.AreEqual(editor.LastPrompt.Length, print.CursorLeft);
         }
 
@@ -371,11 +374,11 @@ namespace MSGTest.Console
         {
             // Setup
             read.PushString("2345601234");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushRightArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual(5, print.CursorLeft);
         }
 
@@ -385,11 +388,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 0123456");
             read.PushLeftArrow(4);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushUpArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<3^0", print.Output);
         }
 
@@ -398,11 +401,11 @@ namespace MSGTest.Console
         {
             // Setup
             read.PushString("234 0123 56");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushUpArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<5^0", print.Output);
         }
 
@@ -412,11 +415,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 012345601234");
             read.PushLeftArrow(2);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushUpArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<3^1", print.Output);
         }
 
@@ -428,11 +431,11 @@ namespace MSGTest.Console
             read.PushLeftArrow(1);
             read.PushUpArrow(2);
             read.PushDownArrow();
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushDownArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<6^3", print.Output);
         }
 
@@ -443,11 +446,11 @@ namespace MSGTest.Console
             read.PushString("2345 01234 012345 0123456");
             read.PushUpArrow(2);
             read.PushDownArrow();
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushDownArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<7^3", print.Output);
         }
 
@@ -457,11 +460,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("23 012345");
             read.PushLeftArrow(1);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushUpArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<4^0", print.Output);
         }
 
@@ -471,11 +474,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 70123456");
             read.PushLeftArrow(2);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushUpArrow();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<6^0", print.Output);
         }
 
@@ -486,11 +489,11 @@ namespace MSGTest.Console
             //             01234567
             read.PushString("23 45");
             read.PushLeftArrow(5);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushLeftArrow(1, ConsoleModifiers.Control);
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("", print.Output);
         }
 
@@ -502,11 +505,11 @@ namespace MSGTest.Console
             read.PushString("23 45");
             read.PushLeftArrow(1);
             read.PushLeftArrow(1, ConsoleModifiers.Control);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushLeftArrow(1, ConsoleModifiers.Control);
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<2^0", print.Output);
         }
 
@@ -517,11 +520,11 @@ namespace MSGTest.Console
             //             012345601234567
             read.PushString("23 45 12 23 3");
             read.PushLeftArrow(1);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushLeftArrow(1, ConsoleModifiers.Control);
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<4^1", print.Output);
         }
 
@@ -532,11 +535,11 @@ namespace MSGTest.Console
             //             01234567
             read.PushString("23 45");
             read.PushLeftArrow(5);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushRightArrow(1, ConsoleModifiers.Control);
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<5^0", print.Output);
         }
 
@@ -547,11 +550,11 @@ namespace MSGTest.Console
             //             01234567
             read.PushString("23 45");
             read.PushLeftArrow(2);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushRightArrow(1, ConsoleModifiers.Control);
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<7^0", print.Output);
         }
 
@@ -562,11 +565,11 @@ namespace MSGTest.Console
             //             012345601234567
             read.PushString("23 45 12 23 3");
             read.PushLeftArrow(7);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushRightArrow(1, ConsoleModifiers.Control);
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<4^1", print.Output);
         }
 
@@ -574,8 +577,8 @@ namespace MSGTest.Console
         public void TestEscapeEditorReturnsNullBuffer()
         {
             read.PushString("234\x1B");
-            string buffer = editor.StringPrompt();
-            editor.GetAndProcessKeys();
+            string buffer = editor.StringPrompt(io);
+            editor.GetAndProcessKeys(io);
             Assert.IsNull(buffer);
         }
 
@@ -585,11 +588,11 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 70 23456701 34 67012 456");
             read.PushLeftArrow(19);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushEscape();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<0^5\n", print.Output);
         }
 
@@ -599,25 +602,25 @@ namespace MSGTest.Console
             // Setup
             read.PushString("2345 70 23456701 34 67012 456");
             read.PushLeftArrow(19);
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             print.ClearOutput();
             // Test
             read.PushEnter();
-            editor.GetAndProcessKeys();
+            editor.GetAndProcessKeys(io);
             Assert.AreEqual("<0^5\n", print.Output);
         }
 
         [Test]
         public void TestInsertDoesNotThrowExceptionWhenTextWraps()
         {
-            Assert.DoesNotThrow(() => read.PushString("2345 1234"), editor.StringPrompt());
+            Assert.DoesNotThrow(() => read.PushString("2345 1234"), editor.StringPrompt(io));
         }
 
         [Test]
         public void TestInsertLineThatNeedsToBeWrapped()
         {
             read.PushString("War wrap");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             Assert.AreEqual(editor.LastPrompt + "War <5^0 w<6^0  wrap", print.Output);
         }
 
@@ -625,7 +628,7 @@ namespace MSGTest.Console
         public void TestInsertOnce()
         {
             read.PushString("a");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             Assert.AreEqual(editor.LastPrompt + "a", print.Output);
         }
 
@@ -633,7 +636,7 @@ namespace MSGTest.Console
         public void TestInsertTwice()
         {
             read.PushString("ab");
-            editor.StringPrompt();
+            editor.StringPrompt(io);
             Assert.AreEqual(editor.LastPrompt + "ab", print.Output);
         }
     }

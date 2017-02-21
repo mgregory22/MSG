@@ -257,7 +257,7 @@ namespace MSG.Console.EditorAux
             int previousLineCnt = lineBreaks.Count;
             // Clear previous calculations
             lineBreaks.Clear();
-            // Start index of first line is always 0
+            // Start index of first line is ALWAYS 0
             int lineStart = 0;
             // Save the cursor position of last scanned word break
             int lastWordBreak = 0;

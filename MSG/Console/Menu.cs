@@ -20,8 +20,7 @@ namespace MSG.Console
     {
         private List<MenuItem> menuItems;
         private CharPrompt charPrompt;
-        private Print print;
-        private Read read;
+        private Io io;
         private string title;
         private MenuItem helpItem;
         private const char helpKey = '?';
@@ -32,21 +31,20 @@ namespace MSG.Console
         /// </summary>
         /// <param name="title">The menu title displayed in prompts and help</param>
         /// <param name="charPrompt">User prompt and input object</param>
-        public Menu(string title, CharPrompt charPrompt)
+        public Menu(Io io, string title, CharPrompt charPrompt)
         {
             this.title = title;
             this.charPrompt = charPrompt;
-            this.print = charPrompt.Print;
-            this.read = charPrompt.Read;
+            this.io = io;
             this.menuItems = new List<MenuItem>();
 
-            // Menus always have a help item for printing item
+            // Menus ALWAYS have a help item for printing item
             // keystrokes and descriptions.
             this.helpItem = new MenuItem(
                     helpKey,
                     "Help",
-                    new HelpDialog(this.print, this),
-                    Condition.always
+                    Cond.ALWAYS,
+                    new HelpDlgCmd(io, this)
                 );
         }
 
@@ -74,7 +72,7 @@ namespace MSG.Console
                     return menuItem;
                 }
             }
-            // The help item is always available, unless the helpKey
+            // The help item is ALWAYS available, unless the helpKey
             // keystroke has been redefined.
             if (keystroke == helpKey) {
                 return helpItem;
@@ -92,36 +90,36 @@ namespace MSG.Console
         /// <summary>
         /// Performs the menu input/action loop.
         /// </summary>
-        public Command.Result Loop()
+        public Cmd.Result Loop(Io io)
         {
-            Command.Result result;
+            Cmd.Result result;
 
             do {
                 // Print a newline to break things up a bit
-                print.Newline();
+                io.print.Newline();
 
                 // Print menu title
-                print.StringNL(this.Title);
+                io.print.StringNL(this.Title);
 
                 // Prompt ! for keystroke
                 charPrompt.ValidList = ValidKeys;
-                char c = charPrompt.PromptAndInput();
+                char c = charPrompt.PromptAndInput(io);
 
                 // Find menu item that matches keystroke
                 MenuItem m = this.FindMatchingItem(c);
 
                 // Execute command
-                result = m.Do();
+                result = m.Do(io);
 
                 // If result should be printed, print it
                 if (result.IsPrintable) {
-                    print.StringNL(result.ToString());
+                    io.print.StringNL(result.ToString());
                 }
             } while (!result.IsReturnable);
 
             // Only allow UpMenu to go up a single menu
-            if (result.GetType() == typeof(Command.UpMenu)) {
-                result = Command.ok;
+            if (result.GetType() == typeof(Cmd.UpMenu)) {
+                result = Cmd.OK;
             }
 
             return result;
@@ -169,7 +167,7 @@ namespace MSG.Console
                 for (int i = 0; i < menuItems.Count; i++) {
                     validKeys[i] = menuItems[i].Keystroke;
                 }
-                // Help is always available
+                // Help is ALWAYS available
                 validKeys[menuItems.Count] = helpKey;
                 return validKeys;
             }

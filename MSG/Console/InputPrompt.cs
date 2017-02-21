@@ -3,6 +3,7 @@
 //
 
 using MSG.IO;
+using MSG.Patterns;
 
 namespace MSG.Console
 {
@@ -11,23 +12,18 @@ namespace MSG.Console
     /// print/read objects and prompt string.
     /// Can print the prompt and pause for keypress.
     /// </summary>
-    public abstract class InputPrompt
+    public abstract class InputPrompt : Cmd
     {
-        protected Print print;
         protected string prompt;
-        protected Read read;
         protected string pausePrompt;
 
         /// <summary>
         /// Initialize a prompt with message, print and read objects.
         /// </summary>
-        /// <param name="print">Used to print the prompt</param>
-        /// <param name="read">Used to read the user input</param>
+        /// <param name="io">Used for input and output</param>
         /// <param name="prompt">The prompt string to use when requesting user input</param>
-        public InputPrompt(Print print, Read read, string prompt = "> ")
+        public InputPrompt(string prompt = "> ")
         {
-            this.print = print;
-            this.read = read;
             this.prompt = prompt;
             this.pausePrompt = "Press a key";
         }
@@ -35,10 +31,10 @@ namespace MSG.Console
         /// <summary>
         /// Wait for key to keep the window open.
         /// </summary>
-        public void Pause()
+        public void Pause(Io io)
         {
-            print.String(PausePrompt);
-            read.GetNextChar(true);
+            io.print.String(PausePrompt);
+            io.read.GetNextChar(io.print);
         }
 
         public string PausePrompt {
@@ -51,20 +47,11 @@ namespace MSG.Console
         }
 
         /// <summary>
-        /// The object used to display information to the user.
-        /// </summary>
-        public Print Print
-        {
-            get { return print; }
-            set { print = value; }
-        }
-
-        /// <summary>
         /// Uses the print object to print the prompt message (without newline).
         /// </summary>
-        public void PrintPrompt()
+        public void PrintPrompt(Print print)
         {
-            Print.String(prompt);
+            print.String(prompt);
         }
 
         /// <summary>
@@ -74,15 +61,6 @@ namespace MSG.Console
         {
             get { return prompt; }
             set { prompt = value; }
-        }
-
-        /// <summary>
-        /// The object used to get user input.
-        /// </summary>
-        public Read Read
-        {
-            get { return read; }
-            set { read = value; }
         }
     }
 }

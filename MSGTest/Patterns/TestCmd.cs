@@ -1,32 +1,30 @@
 ﻿//
-// MSGTest/Patterns/TestDialogCommand.cs
+// MSGTest/Patterns/TestCmd.cs
 //
 
-using MSG.IO;
 using MSG.Patterns;
 
 namespace MSGTest.Patterns
 {
-    public class TestDialogCommand : DialogCommand
+    public class TestCmd : UnCmd
     {
         public int doCount;
         public int undoCount;
 
-        public TestDialogCommand(Print print, Read read, UndoManager undoManager)
-            : base(print, read, undoManager)
+        public TestCmd()
         {
         }
 
         public override Result Do()
         {
             doCount++;
-            return new Ok();
+            return Cmd.OK;
         }
 
         public override Result Undo()
         {
             undoCount++;
-            return new Ok();
+            return Cmd.OK;
         }
     }
 }

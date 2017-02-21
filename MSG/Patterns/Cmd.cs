@@ -1,5 +1,5 @@
 ﻿//
-// MSG/Patterns/Command.cs
+// MSG/Patterns/Cmd.cs
 //
 
 namespace MSG.Patterns
@@ -7,9 +7,9 @@ namespace MSG.Patterns
     /// <summary>
     /// Command design pattern.
     /// </summary>
-    public abstract class Command
+    public abstract partial class Cmd
     {
-        #region Command.Result class
+        #region Cmd.Result class
 
         public class Result
         {
@@ -51,41 +51,17 @@ namespace MSG.Patterns
             }
         }
 
-        #region Stock Command.Result classes
+        #region Stock Cmd.Result classes
 
         public class Ok : Result
         {
         }
 
-        public class CannotDo : Result
+        public class CantDo : Result
         {
-            public CannotDo()
+            public CantDo()
             {
-                message = "Command cannot be done\n";
-            }
-        }
-
-        public class CannotUndo : Result
-        {
-            public CannotUndo()
-            {
-                message = "Command cannot be undone\n";
-            }
-        }
-
-        public class NothingToRedo : Result
-        {
-            public NothingToRedo()
-            {
-                message = "Nothing to redo\n";
-            }
-        }
-
-        public class NothingToUndo : Result
-        {
-            public NothingToUndo()
-            {
-                message = "Nothing to undo\n";
+                message = "Cmd cannot be done\n";
             }
         }
 
@@ -97,9 +73,9 @@ namespace MSG.Patterns
             }
         }
 
-        public class QuitProgram : Result
+        public class QuitProg : Result
         {
-            public QuitProgram()
+            public QuitProg()
             {
                 isReturnable = true;
             }
@@ -114,17 +90,14 @@ namespace MSG.Patterns
         }
         #endregion
 
-        #region Stock Command.Result objects
+        #region Stock Cmd.Result objects
 
         // Use these to signal some basic condition to avoid creating and
         // garbage-collecting a bunch of little objects.
-        public static Ok ok = new Ok();
-        public static CannotDo cannotDo = new CannotDo();
-        public static CannotUndo cannotUndo = new CannotUndo();
-        public static NothingToRedo nothingToRedo = new NothingToRedo();
-        public static NothingToUndo nothingToUndo = new NothingToUndo();
-        public static UpMenu upMenu = new UpMenu();
-        public static QuitProgram quitProgram = new QuitProgram();
+        public static Ok OK = new Ok();
+        public static CantDo CANTDO = new CantDo();
+        public static UpMenu UPMENU = new UpMenu();
+        public static QuitProg QUITPROG = new QuitProg();
 
         #endregion
 
@@ -135,41 +108,33 @@ namespace MSG.Patterns
         /// </summary>
         public virtual Result Do()
         {
-            return Command.cannotDo;
-        }
-
-        /// <summary>
-        /// Undoes a previously performed command.
-        /// </summary>
-        public virtual Result Undo()
-        {
-            return Command.cannotUndo;
+            return Cmd.CANTDO;
         }
     }
 
     #region Stock commands
 
-    public class Nothing : Command
+    public class Nothing : Cmd
     {
         public override Result Do()
         {
-            return Command.ok;
+            return Cmd.OK;
         }
     }
 
-    public class UpMenu : Command
+    public class UpMenu : Cmd
     {
         public override Result Do()
         {
-            return Command.upMenu;
+            return Cmd.UPMENU;
         }
     }
 
-    public class QuitProgram : Command
+    public class QuitProg : Cmd
     {
         public override Result Do()
         {
-            return Command.quitProgram;
+            return Cmd.QUITPROG;
         }
     }
 
