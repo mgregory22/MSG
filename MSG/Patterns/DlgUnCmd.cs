@@ -27,6 +27,11 @@ namespace MSG.Patterns
     {
         protected UndoManager undoManager;
 
+        public DlgUnCmd(Io io) : base(io)
+        {
+            undoManager = null;
+        }
+
         public DlgUnCmd(Io io, UndoManager undoManager) : base(io)
         {
             this.undoManager = undoManager;
@@ -48,7 +53,7 @@ namespace MSG.Patterns
         /// this at the end of their Do() to perform the process
         /// and add it to the undo list.
         /// </remarks>
-        public virtual Cmd.Result Do(Io io, UndoManager undoManager)
+        public override Cmd.Result Do(Io io)
         {
             // If the command already exists, then it has
             // already been done and can't be redone.
@@ -70,7 +75,9 @@ namespace MSG.Patterns
             Cmd.Result result = cmd.Do();
 
             // Add the command to the undo manager queue.
-            undoManager.Do(cmd);
+            if (undoManager != null) {
+                undoManager.Do(cmd);
+            }
 
             // I'm not sure? This means Do() can be called repeatedly,
             // but I don't think that's right.
@@ -79,7 +86,7 @@ namespace MSG.Patterns
             return result;
         }
 
-        public virtual Cmd.Result Undo(Io io, UndoManager undoManager)
+        public virtual Cmd.Result Undo(Io io)
         {
             return Cmd.OK;
         }

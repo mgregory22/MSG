@@ -48,7 +48,7 @@ namespace MSGTest.Console
             // Push a key to get past the prompt
             read.PushEnter();
             prompt.Pause(io);
-            Assert.AreEqual(print.Output, prompt.PausePrompt);
+            Assert.AreEqual(prompt.PausePrompt, print.Output);
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace MSGTest.Console
             // Push a key to get past the prompt
             read.PushEnter();
             prompt.Pause(io);
-            Assert.AreEqual(print.Output, prompt.PausePrompt);
+            Assert.AreEqual(prompt.PausePrompt, print.Output);
         }
     }
 }

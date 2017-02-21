@@ -51,7 +51,7 @@ namespace MSG.Console
             char c;
             do {
                 PrintPrompt(io.print);
-                c = io.read.GetNextChar();
+                c = io.read.GetNextChar(io.print);
                 io.print.Newline();
             } while (CharIsInvalid(c, io.print));
             return c;

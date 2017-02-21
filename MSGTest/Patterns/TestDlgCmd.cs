@@ -22,13 +22,13 @@ namespace MSGTest.Patterns
             return new TestCmd();
         }
 
-        public override Cmd.Result Do(Io io, UndoManager undoManager)
+        public override Cmd.Result Do(Io io)
         {
             doCount++;
             return Cmd.OK;
         }
 
-        public override Cmd.Result Undo(Io io, UndoManager undoManager)
+        public override Cmd.Result Undo(Io io)
         {
             undoCount++;
             return Cmd.OK;

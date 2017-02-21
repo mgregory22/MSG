@@ -64,8 +64,9 @@ namespace MSGTest.Console
         [Test]
         public void TestActionIsExecutedWhenCorrectKeystrokeIsSent()
         {
-            if (menuItem.DoesMatch(testKey))
+            if (menuItem.DoesMatch(testKey)) {
                 menuItem.Do(io);
+            }
             Assert.AreEqual(1, testDlgCmd.doCount);
         }
 
