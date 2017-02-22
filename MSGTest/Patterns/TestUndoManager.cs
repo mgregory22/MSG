@@ -8,7 +8,7 @@ using MSG.Patterns;
 
 namespace MSGTest.Patterns
 {
-    public class TestUndoManager : UndoManager
+    public class TestUndoManager : UndoAndRedo
     {
 
         public TestUndoManager()

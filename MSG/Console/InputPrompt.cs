@@ -34,7 +34,7 @@ namespace MSG.Console
         public void Pause(Io io)
         {
             io.print.String(PausePrompt);
-            io.read.GetNextChar(io.print);
+            io.read.GetNextChar(); // no echo
         }
 
         public string PausePrompt {

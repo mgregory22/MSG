@@ -19,7 +19,7 @@ namespace MSGTest.Console
          * Member variables
          */
         Io io;
-        UndoManager undoManager;
+        UndoAndRedo undoAndRedo;
 
         MenuItem menuItem;
         string testDesc = "Test";
@@ -31,8 +31,8 @@ namespace MSGTest.Console
         public void Initialize()
         {
             io = new Io(new Print(), new Read());
-            undoManager = new UndoManager();
-            testDlgCmd = new TestDlgCmd(io, undoManager);
+            undoAndRedo = new UndoAndRedo();
+            testDlgCmd = new TestDlgCmd(io, undoAndRedo);
             menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
             menuItem.MaxWidth = testMaxWidth;
         }
@@ -67,7 +67,7 @@ namespace MSGTest.Console
             if (menuItem.DoesMatch(testKey)) {
                 menuItem.Do(io);
             }
-            Assert.AreEqual(1, testDlgCmd.doCount);
+            Assert.AreEqual(1, testDlgCmd.DoCount);
         }
 
         [Test]
@@ -80,15 +80,13 @@ namespace MSGTest.Console
         public void TestActionIsNotExecutedWhenWrongKeystrokesAreSent()
         {
             // Try every key but the real one
-            for (char k = ' '; k < '~'; k++)
-            {
-                if (k != testKey)
-                {
+            for (char k = ' '; k < '~'; k++) {
+                if (k != testKey) {
                     menuItem.DoesMatch(k);
                 }
             }
             // Assert Execute() was never executed
-            Assert.AreEqual(0, testDlgCmd.doCount);
+            Assert.AreEqual(0, testDlgCmd.DoCount);
         }
 
         [Test]
@@ -96,10 +94,8 @@ namespace MSGTest.Console
         {
             bool result = false;
             // Try every key but the real one
-            for (char k = ' '; k < '~'; k++)
-            {
-                if (k != testKey)
-                {
+            for (char k = ' '; k < '~'; k++) {
+                if (k != testKey) {
                     result |= menuItem.DoesMatch(k);
                 }
             }
@@ -111,7 +107,7 @@ namespace MSGTest.Console
     public class LongMenuItemTests
     {
         Io io;
-        UndoManager undoManager;
+        UndoAndRedo undoAndRedo;
         MenuItem menuItem;
         string testDesc = "Test of a very long description to test wrapping";
         char testKey = 't';
@@ -135,8 +131,8 @@ namespace MSGTest.Console
         public void Initialize()
         {
             io = new Io(new Print(), new Read());
-            undoManager = new UndoManager();
-            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoManager);
+            undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
             menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
             menuItem.MaxWidth = testMaxWidth;
         }
@@ -166,7 +162,7 @@ namespace MSGTest.Console
     public class VeryLongMenuItemTests
     {
         Io io;
-        UndoManager undoManager;
+        UndoAndRedo undoAndRedo;
         MenuItem menuItem;
         string testDescLine1 = "Test of a very long test string that";
         string testDescLine2 = "will be wrapped into three lines that";
@@ -189,8 +185,8 @@ namespace MSGTest.Console
         public void Initialize()
         {
             io = new Io(new Print(), new Read());
-            undoManager = new UndoManager();
-            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoManager);
+            undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
             menuItem = new MenuItem(testKey, testDescLine1 + " " + testDescLine2 + " " + testDescLine3 + " " + testDescLine4, Cond.ALWAYS, testDlgCmd);
             menuItem.MaxWidth = testMaxWidth;
         }
@@ -214,8 +210,7 @@ namespace MSGTest.Console
         public void TestDescriptionLinesAreIndentedPastKeystroke()
         {
             string prefix = new String(' ', GetKeystrokePrefixLen());
-            for (int i = 1; i < menuItem.LineCount; i++)
-            {
+            for (int i = 1; i < menuItem.LineCount; i++) {
                 Assert.IsTrue(menuItem.ToStringByLine(i).StartsWith(prefix));
             }
         }

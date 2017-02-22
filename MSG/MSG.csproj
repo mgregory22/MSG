@@ -42,25 +42,34 @@
   <ItemGroup>
     <Compile Include="Console\IntEditor.cs" />
     <Compile Include="IO\Io.cs" />
-    <Compile Include="Patterns\DlgUnCmd.cs" />
-    <Compile Include="Patterns\UnCmd.cs" />
-    <Compile Include="Patterns\Condition.cs" />
-    <Compile Include="Patterns\Conditions\CanRedo.cs" />
-    <Compile Include="Patterns\Conditions\CanUndo.cs" />
+    <Compile Include="Patterns\Cmds\QuitProg.cs" />
+    <Compile Include="Patterns\Cmds\Nothing.cs" />
+    <Compile Include="Patterns\Cmds\UpMenu.cs" />
+    <Compile Include="Patterns\Cmd\Result.cs" />
+    <Compile Include="Patterns\Cmd\Results\CantDo.cs" />
+    <Compile Include="Patterns\Cmd\Results\CantRedo.cs" />
+    <Compile Include="Patterns\Cmd\Results\CantUndo.cs" />
+    <Compile Include="Patterns\Cmd\Results\Ok.cs" />
+    <Compile Include="Patterns\Cmd\Results\QuitProg.cs" />
+    <Compile Include="Patterns\Cmd\Results\UpMenu.cs" />
+    <Compile Include="Patterns\Cond.cs" />
+    <Compile Include="Patterns\Conds\Always.cs" />
+    <Compile Include="Patterns\Conds\IsRedoStackEmpty.cs" />
+    <Compile Include="Patterns\Conds\IsUndoStackEmpty.cs" />
     <Compile Include="Patterns\DlgCmd.cs" />
     <Compile Include="Types\Dir\Dir.cs" />
-    <Compile Include="Patterns\UndoManager.cs" />
+    <Compile Include="Patterns\UndoAndRedo.cs" />
     <Compile Include="Types\Array\EndlessArray.cs" />
     <Compile Include="Types\String\Draw.cs" />
     <Compile Include="IO\ConsolePos.cs" />
     <Compile Include="Console\Editor.cs" />
-    <Compile Include="Console\EditorAux\WordWrapper.cs" />
-    <Compile Include="Console\EditorAux\Buffer.cs" />
+    <Compile Include="Console\Editor\WordWrapper.cs" />
+    <Compile Include="Console\Editor\Buffer.cs" />
     <Compile Include="Console\CharPrompt.cs" />
     <Compile Include="Console\Menu.cs" />
     <Compile Include="Console\MenuItem.cs" />
-    <Compile Include="Console\EditorAux\KeyClasses.cs" />
-    <Compile Include="Console\EditorAux\View.cs" />
+    <Compile Include="Console\Editor\KeyClasses.cs" />
+    <Compile Include="Console\Editor\View.cs" />
     <Compile Include="IO\Print.cs" />
     <Compile Include="Console\InputPrompt.cs" />
     <Compile Include="IO\Read.cs" />
@@ -69,6 +78,7 @@
     <Compile Include="Types\String\Format.cs" />
     <Compile Include="Types\String\Scan.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

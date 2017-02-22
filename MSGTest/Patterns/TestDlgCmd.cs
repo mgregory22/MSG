@@ -7,31 +7,31 @@ using MSG.Patterns;
 
 namespace MSGTest.Patterns
 {
-    public class TestDlgCmd : DlgUnCmd
+    public class TestDlgCmd : DlgCmd
     {
-        public int doCount;
-        public int undoCount;
+        TestCmd testCmd;
 
-        public TestDlgCmd(Io io, UndoManager undoManager)
-            : base(io, undoManager)
+        public TestDlgCmd(Io io, UndoAndRedo undoAndRedo)
+            : base(io, undoAndRedo)
         {
         }
 
-        public override UnCmd Create()
+        public override Cmd Create()
         {
-            return new TestCmd();
+            testCmd = new TestCmd();
+            return testCmd;
         }
 
-        public override Cmd.Result Do(Io io)
-        {
-            doCount++;
-            return Cmd.OK;
+        public int DoCount {
+            get {
+                return (testCmd == null) ? 0 : testCmd.doCount;
+            }
         }
 
-        public override Cmd.Result Undo(Io io)
-        {
-            undoCount++;
-            return Cmd.OK;
+        public int UndoCount {
+            get {
+                return (testCmd == null) ? 0 : testCmd.undoCount;
+            }
         }
     }
 }

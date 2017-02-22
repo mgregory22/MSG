@@ -1,41 +1,40 @@
 ﻿//
-// MSG/Patterns/UndoManager.cs
+// MSG/Patterns/UndoAndRedo.cs
 //
 
 using System.Collections.Generic;
 
 namespace MSG.Patterns
 {
-    public class UndoManager
+    /// <summary>
+    /// UndoAndRedo takes an undoable command and
+    /// performs and tracks the doing and undoing.
+    /// </summary>
+    public class UndoAndRedo
     {
-        Stack<UnCmd> undoStack;
-        Stack<UnCmd> redoStack;
+        Stack<Cmd> undoStack;
+        Stack<Cmd> redoStack;
 
-        public UndoManager()
+        public UndoAndRedo()
         {
-            this.undoStack = new Stack<UnCmd>();
-            this.redoStack = new Stack<UnCmd>();
+            this.undoStack = new Stack<Cmd>();
+            this.redoStack = new Stack<Cmd>();
         }
 
         /// <remarks>
         /// virtual is for testing
         /// </remarks>
-        public virtual bool CanRedo()
+        public virtual bool RedoStackIsEmpty()
         {
             return redoStack.Count > 0;
         }
 
-        public virtual bool CanUndo()
+        public virtual bool UndoStackIsEmpty()
         {
             return undoStack.Count > 0;
         }
 
         public virtual void Do(Cmd cmd)
-        {
-            redoStack.Clear();
-        }
-
-        public virtual void Do(UnCmd cmd)
         {
             undoStack.Push(cmd);
             redoStack.Clear();
@@ -43,11 +42,11 @@ namespace MSG.Patterns
 
         public virtual Cmd.Result Redo()
         {
-            if (!CanRedo())
+            if (!RedoStackIsEmpty())
             {
-                return new UnCmd.CantRedo();
+                return new Cmd.CantRedo();
             }
-            UnCmd cmd = redoStack.Pop();
+            Cmd cmd = redoStack.Pop();
             Cmd.Result result = cmd.Do();
             undoStack.Push(cmd);
             return result;
@@ -55,11 +54,11 @@ namespace MSG.Patterns
 
         public virtual Cmd.Result Undo()
         {
-            if (!CanUndo())
+            if (!UndoStackIsEmpty())
             {
-                return UnCmd.CANTUNDO;
+                return Patterns.Cmd.CANTUNDO;
             }
-            UnCmd cmd = undoStack.Pop();
+            Cmd cmd = undoStack.Pop();
             Cmd.Result result = cmd.Undo();
             redoStack.Push(cmd);
             return result;

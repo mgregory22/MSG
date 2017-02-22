@@ -1,17 +1,13 @@
 ﻿//
-// MSGTest/Console/EditorAux/WordWrapperTests.cs
+// MSGTest/Console/Editor/WordWrapperTests.cs
 //
 
-using MSG.IO;
 using MSG.Types.Array;
-using MSG.Types.String;
 using NUnit.Framework;
-using System;
-using System.Diagnostics;
-using Buffer = MSG.Console.EditorAux.Buffer;
-using WordWrapper = MSG.Console.EditorAux.WordWrapper;
+using Buffer = MSG.Console.Editor.Buffer;
+using WordWrapper = MSG.Console.Editor.WordWrapper;
 
-namespace MSGTest.Console.EditorAux
+namespace MSGTest.Console
 {
     [TestFixture]
     public class WordWrapperTests

@@ -2,17 +2,15 @@
 // MSG/Console/Editor.cs
 //
 
-using MSG.Console.EditorAux;
 using MSG.IO;
 using System;
-using Buffer = MSG.Console.EditorAux.Buffer;
 
 namespace MSG.Console
 {
     /// <summary>
     /// More featureful console input editor.
     /// </summary>
-    public class Editor
+    public partial class Editor
     {
         protected Buffer buffer;
         protected View view;

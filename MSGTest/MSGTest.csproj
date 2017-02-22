@@ -70,7 +70,7 @@
   <ItemGroup>
     <Compile Include="Console\MenuItemTests.cs" />
     <Compile Include="Console\CharPromptTests.cs" />
-    <Compile Include="Console\EditorAux\BufferTests.cs" />
+    <Compile Include="Console\Editor\BufferTests.cs" />
     <Compile Include="Console\IntEditorTests.cs" />
     <Compile Include="Patterns\TestDlgCmd.cs" />
     <Compile Include="Patterns\TestUndoManager.cs" />
@@ -78,7 +78,7 @@
     <Compile Include="Types\Dir\DirTests.cs" />
     <Compile Include="Types\String\DrawTests.cs" />
     <Compile Include="Console\EditorTests.cs" />
-    <Compile Include="Console\EditorAux\WordWrapperTests.cs" />
+    <Compile Include="Console\Editor\WordWrapperTests.cs" />
     <Compile Include="IO\TestPrint.cs" />
     <Compile Include="IO\TestRead.cs" />
     <Compile Include="Patterns\TestCmd.cs" />
@@ -95,7 +95,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Console\EditorAux\Wordwrap example.txt" />
+    <Content Include="Console\Editor\Wordwrap example.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -26,8 +26,8 @@ namespace MSGTest.Console
             set { toStringCount = value; }
         }
 
-        public ToStringCountMenuItem(char k, int n, Io io, UndoManager undoManager)
-            : base(k, "", Cond.ALWAYS, new TestDlgCmd(io, undoManager))
+        public ToStringCountMenuItem(char k, int n, Io io, UndoAndRedo undoAndRedo)
+            : base(k, "", Cond.ALWAYS, new TestDlgCmd(io, undoAndRedo))
         {
         }
     }
@@ -42,12 +42,12 @@ namespace MSGTest.Console
         public void Initialize()
         {
             Io io = new Io(new Print(), new Read());
-            UndoManager undoManager = new UndoManager();
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
             menuItems = new ToStringCountMenuItem[] {
-                new ToStringCountMenuItem('a', 1, io, undoManager),
-                new ToStringCountMenuItem('b', 2, io, undoManager),
-                new ToStringCountMenuItem('c', 3, io, undoManager),
-                new ToStringCountMenuItem('d', 4, io, undoManager)
+                new ToStringCountMenuItem('a', 1, io, undoAndRedo),
+                new ToStringCountMenuItem('b', 2, io, undoAndRedo),
+                new ToStringCountMenuItem('c', 3, io, undoAndRedo),
+                new ToStringCountMenuItem('d', 4, io, undoAndRedo)
             };
             CharPrompt prompt = new CharPrompt("");
             menu = new Menu(io, "Test Menu", prompt);
@@ -82,12 +82,12 @@ namespace MSGTest.Console
         public void Initialize()
         {
             Io io = new Io(new Print(), new Read());
-            UndoManager undoManager = new UndoManager();
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
             menuItems = new ToStringCountMenuItem[] {
-                new ToStringCountMenuItem('a', 1, io, undoManager),
-                new ToStringCountMenuItem('b', 2, io, undoManager),
-                new ToStringCountMenuItem('c', 3, io, undoManager),
-                new ToStringCountMenuItem('d', 4, io, undoManager)
+                new ToStringCountMenuItem('a', 1, io, undoAndRedo),
+                new ToStringCountMenuItem('b', 2, io, undoAndRedo),
+                new ToStringCountMenuItem('c', 3, io, undoAndRedo),
+                new ToStringCountMenuItem('d', 4, io, undoAndRedo)
             };
             CharPrompt prompt = new CharPrompt("");
             menu = new Menu(io, "Test Menu", prompt);
@@ -146,7 +146,7 @@ namespace MSGTest.Console
         }
 
         Io io;
-        UndoManager undoManager;
+        UndoAndRedo undoAndRedo;
         Menu menu;
         CommandCountMenuItem[] menuItems;
 
@@ -154,12 +154,12 @@ namespace MSGTest.Console
         public void Initialize()
         {
             io = new Io(new Print(), new Read());
-            undoManager = new UndoManager();
+            undoAndRedo = new UndoAndRedo();
             menuItems = new CommandCountMenuItem[] {
-                new CommandCountMenuItem('0', "Item 0", Cond.ALWAYS, new TestDlgCmd(io, undoManager)),
-                new CommandCountMenuItem('1', "Item 1", Cond.ALWAYS, new TestDlgCmd(io, undoManager)),
-                new CommandCountMenuItem('2', "Item 2", Cond.ALWAYS, new TestDlgCmd(io, undoManager)),
-                new CommandCountMenuItem('3', "Item 3", Cond.ALWAYS, new TestDlgCmd(io, undoManager))
+                new CommandCountMenuItem('0', "Item 0", Cond.ALWAYS, new TestDlgCmd(io, undoAndRedo)),
+                new CommandCountMenuItem('1', "Item 1", Cond.ALWAYS, new TestDlgCmd(io, undoAndRedo)),
+                new CommandCountMenuItem('2', "Item 2", Cond.ALWAYS, new TestDlgCmd(io, undoAndRedo)),
+                new CommandCountMenuItem('3', "Item 3", Cond.ALWAYS, new TestDlgCmd(io, undoAndRedo))
             };
             CharPrompt prompt = new CharPrompt("");
             menu = new Menu(io, "Test Menu", prompt);
@@ -171,11 +171,11 @@ namespace MSGTest.Console
         {
             MenuItem m = menu.FindMatchingItem('1');
             m.Do(io);
-            Assert.AreEqual(1, menuItems[1].TestDlgCmd.doCount);
+            Assert.AreEqual(1, menuItems[1].TestDlgCmd.DoCount);
             // Might as well check that ONLY the correct command was executed
-            Assert.AreEqual(0, menuItems[0].TestDlgCmd.doCount);
-            Assert.AreEqual(0, menuItems[2].TestDlgCmd.doCount);
-            Assert.AreEqual(0, menuItems[3].TestDlgCmd.doCount);
+            Assert.AreEqual(0, menuItems[0].TestDlgCmd.DoCount);
+            Assert.AreEqual(0, menuItems[2].TestDlgCmd.DoCount);
+            Assert.AreEqual(0, menuItems[3].TestDlgCmd.DoCount);
         }
 
         [Test]

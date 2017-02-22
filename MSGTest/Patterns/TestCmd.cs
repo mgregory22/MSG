@@ -6,7 +6,7 @@ using MSG.Patterns;
 
 namespace MSGTest.Patterns
 {
-    public class TestCmd : UnCmd
+    public class TestCmd : Cmd
     {
         public int doCount;
         public int undoCount;
@@ -18,13 +18,13 @@ namespace MSGTest.Patterns
         public override Result Do()
         {
             doCount++;
-            return Cmd.OK;
+            return MSG.Patterns.Cmd.OK;
         }
 
         public override Result Undo()
         {
             undoCount++;
-            return Cmd.OK;
+            return MSG.Patterns.Cmd.OK;
         }
     }
 }
