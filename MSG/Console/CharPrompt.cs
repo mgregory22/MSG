@@ -13,7 +13,6 @@ namespace MSG.Console
     /// </summary>
     public class CharPrompt : InputPrompt
     {
-        private char[] validList;
         public const string helpMsg = "Error: Invalid selection. Press ? for help.";
 
         /// <summary>
@@ -33,9 +32,9 @@ namespace MSG.Console
         /// <param name="c">Char to validate</param>
         /// <param name="errors">Output object for error messages</param>
         /// <returns>True if char is invalid</returns>
-        private bool CharIsInvalid(char c, Print errors)
+        private bool CharIsInvalid(char c, char[] validKeys, Print errors)
         {
-            if (validList != null && !validList.Contains(c)) {
+            if (validKeys != null && !validKeys.Contains(c)) {
                 errors.StringNL(helpMsg);
                 return true;
             }
@@ -45,27 +44,19 @@ namespace MSG.Console
         /// <summary>
         /// Displays the prompt and reads a valid character.
         /// </summary>
+        /// <param name="io">Object for I/O</param>
+        /// <param name="validKeys">Optional list of valid keys.
+        /// If not provided all keys are valid.</param>
         /// <returns>The char entered by the user</returns>
-        public char PromptAndInput(Io io)
+        public char PromptAndInput(Io io, char[] validKeys = null)
         {
             char c;
             do {
                 PrintPrompt(io.print);
                 c = io.read.GetNextChar(io.print);
                 io.print.Newline();
-            } while (CharIsInvalid(c, io.print));
+            } while (CharIsInvalid(c, validKeys, io.print));
             return c;
-        }
-
-        /// <summary>
-        /// If this property is set, the key the user enters must be
-        /// in this list, otherwise an error message will be displayed
-        /// and the user reprompted.
-        /// </summary>
-        public char[] ValidList
-        {
-            get { return validList; }
-            set { validList = value; }
         }
     }
 }

@@ -25,6 +25,8 @@ namespace MSG.Console
         private MenuItem helpItem;
         private const char helpKey = '?';
 
+        private static bool printedHelp = false;
+
         /// <summary>
         /// Initializes a new menu with the given array of menu items.  The items
         /// are displayed in the order given in the array.
@@ -38,8 +40,8 @@ namespace MSG.Console
             this.io = io;
             this.menuItems = new List<MenuItem>();
 
-            // Menus ALWAYS have a help item for printing item
-            // keystrokes and descriptions.
+            // Menus always have a hidden help item for
+            // printing item keystrokes and descriptions.
             this.helpItem = new MenuItem(
                     helpKey,
                     "Help",
@@ -99,11 +101,18 @@ namespace MSG.Console
                 io.print.Newline();
 
                 // Print menu title
-                io.print.StringNL(this.Title);
+                io.print.String(this.Title);
+
+                // Print help instruction once
+                if (!Menu.printedHelp) {
+                    io.print.String(" (? for help)");
+                    Menu.printedHelp = true;
+                }
+
+                io.print.Newline();
 
                 // Prompt ! for keystroke
-                charPrompt.ValidList = ValidKeys;
-                char c = charPrompt.PromptAndInput(io);
+                char c = charPrompt.PromptAndInput(io, ValidKeys);
 
                 // Find menu item that matches keystroke
                 MenuItem m = this.FindMatchingItem(c);
@@ -153,7 +162,6 @@ namespace MSG.Console
                     s += menuItem.ToString();
                 }
             }
-            s += helpItem.ToString();
             return s;
         }
 
@@ -167,7 +175,7 @@ namespace MSG.Console
                 for (int i = 0; i < menuItems.Count; i++) {
                     validKeys[i] = menuItems[i].Keystroke;
                 }
-                // Help is ALWAYS available
+                // Help key is always valid
                 validKeys[menuItems.Count] = helpKey;
                 return validKeys;
             }
