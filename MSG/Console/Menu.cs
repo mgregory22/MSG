@@ -23,9 +23,8 @@ namespace MSG.Console
         private Io io;
         private string title;
         private MenuItem helpItem;
+        private bool printedHelp;
         private const char helpKey = '?';
-
-        private static bool printedHelp = false;
 
         /// <summary>
         /// Initializes a new menu with the given array of menu items.  The items
@@ -39,6 +38,7 @@ namespace MSG.Console
             this.charPrompt = charPrompt;
             this.io = io;
             this.menuItems = new List<MenuItem>();
+            this.printedHelp = false;
 
             // Menus always have a hidden help item for
             // printing item keystrokes and descriptions.
@@ -104,9 +104,9 @@ namespace MSG.Console
                 io.print.String(this.Title);
 
                 // Print help instruction once
-                if (!Menu.printedHelp) {
+                if (!this.printedHelp) {
                     io.print.String(" (? for help)");
-                    Menu.printedHelp = true;
+                    this.printedHelp = true;
                 }
 
                 io.print.Newline();
@@ -169,14 +169,16 @@ namespace MSG.Console
         /// Returns the list of keystrokes that have corresponding
         /// menu items.
         /// </summary>
-        public char[] ValidKeys {
+        public List<char> ValidKeys {
             get {
-                char[] validKeys = new char[menuItems.Count + 1];
+                List<char> validKeys = new List<char>();
                 for (int i = 0; i < menuItems.Count; i++) {
-                    validKeys[i] = menuItems[i].Keystroke;
+                    if (menuItems[i].Enabled) {
+                        validKeys.Add(menuItems[i].Keystroke);
+                    }
                 }
                 // Help key is always valid
-                validKeys[menuItems.Count] = helpKey;
+                validKeys.Add(helpKey);
                 return validKeys;
             }
             private set { }

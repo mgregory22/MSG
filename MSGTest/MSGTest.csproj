@@ -75,7 +75,9 @@
     <Compile Include="Patterns\TestDlgCmd.cs" />
     <Compile Include="Patterns\TestUndoManager.cs" />
     <Compile Include="Types\Array\EndlessArrayTests.cs" />
-    <Compile Include="Types\Dir\DirTests.cs" />
+    <Compile Include="Types\Dir\Contents.cs" />
+    <Compile Include="Types\Dir\MemDirTests.cs" />
+    <Compile Include="Types\Dir\DbDirTests.cs" />
     <Compile Include="Types\String\DrawTests.cs" />
     <Compile Include="Console\EditorTests.cs" />
     <Compile Include="Console\Editor\WordWrapperTests.cs" />

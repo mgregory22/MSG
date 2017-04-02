@@ -2,234 +2,155 @@
 // MSG/Types/Dir/Dir.cs
 //
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace MSG.Types.Dir
 {
     /// <summary>
-    /// A node can simultaneously hold a data item and
-    /// another dir.
+    /// Dir isn't really a perfect name for this data structure.
+    /// A Dir is a tree where:
+    ///   * Each node is stored in an indexed list (dir)
+    ///   * Each node has a name, item (user data), and child list (subdir)
+    ///   * There's always a current dir where any changes are made
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class Node<T>
+    public interface Dir<T> : IEnumerable
     {
-        public T item;
-        public Dir<T> subdir;
-
-        public Node(T item, Dir<T> subdir = null)
-        {
-            this.item = item;
-            this.subdir = subdir;
-        }
-    }
-
-    /// <summary>
-    /// A Dir is a list whose nodes can hold both a data item
-    /// and another dir (e.g. task and its subtasks).
-    /// </summary>
-    public class Dir<T> : IEnumerable
-    {
-        protected List<Node<T>> items;
-        protected Dir<T> parent;
-
-        #region Enumerator
-
-        public class Enumerator : IEnumerator
-        {
-            protected List<Node<T>> items;
-            protected List<Node<T>>.Enumerator iterator;
-
-            public Enumerator(List<Node<T>> items)
-            {
-                this.items = items;
-                this.iterator = items.GetEnumerator();
-            }
-
-            ~Enumerator()
-            {
-                iterator.Dispose();
-            }
-
-            object IEnumerator.Current {
-                get {
-                    return iterator.Current.item;
-                }
-            }
-
-            bool IEnumerator.MoveNext()
-            {
-                return iterator.MoveNext();
-            }
-
-            void IEnumerator.Reset()
-            {
-                iterator.Dispose();
-                this.iterator = items.GetEnumerator();
-            }
-        }
-
-        #endregion
-
-        public Dir()
-        {
-            this.items = new List<Node<T>>();
-            this.parent = null;
-        }
-
         /// <summary>
-        /// Dir[i] access
+        /// Adds an item to the end of the parent dir
         /// </summary>
-        /// <param name="index">0-based item number</param>
-        /// <returns>The item</returns>
-        public virtual T this[int index] {
-            // Get item by position
-            get {
-                return items[index].item;
-            }
-            // Replace item with given index
-            set {
-                items[index].item = value;
-            }
-        }
-
-        /// <summary>
-        /// Adds an item to the end of the parent dir.
-        /// </summary>
+        /// <param name="name"></param>
         /// <param name="item"></param>
-        public virtual void Add(T item)
-        {
-            if (ItemExists(item)) {
-                throw new InvalidOperationException("Cannot add same item twice");
-            }
-            Node<T> node = new Node<T>(item);
-            items.Add(node);
-        }
+        int Add(string name, T item);
 
         /// <summary>
-        /// The number of nodes in this dir
+        /// The number of nodes in the current dir
         /// </summary>
-        public int Count {
-            get { return items.Count; }
-        }
+        int Count { get; }
 
         /// <summary>
-        /// Dir enumerator
+        /// Creates a subdir on an item and assigns its
+        /// parent to the current dir
         /// </summary>
-        /// <returns></returns>
-        public IEnumerator GetEnumerator()
-        {
-            return new Enumerator(items);
-        }
+        void CreateSubdir(int index);
 
         /// <summary>
-        /// Returns a item's subdir.
-        /// </summary>
-        public virtual Dir<T> GetSubdir(int index)
-        {
-            return items[index].subdir;
-        }
-
-        /// <summary>
-        /// True if a subdir exists at the given index
-        /// </summary>
-        public bool HasSubdirAt(int index)
-        {
-            return items[index].subdir != null;
-        }
-
-        /// <summary>
-        /// Inserts a new item into the dir.
-        /// The zero-based index determines where it is to be inserted.
+        /// Deletes an item's subdir
         /// </summary>
         /// <param name="index">
-        /// 0-based index in the list to add.
-        /// If index points past end of list, adds item to the end.
+        /// Index in current dir of child subdir to delete
+        /// </param>
+        void DeleteSubdir(int index);
+
+        /// <summary>
+        /// Change the current dir to the given child's subdir
+        /// </summary>
+        /// <param name="index">
+        /// Index in current dir of child dir to change to.
+        /// </param>
+        void DownDir(int index);
+
+        /// <summary>
+        /// Returns a string containing the path to the current dir
+        /// </summary>
+        /// <returns>
+        /// Slash-delimited path of names to the current dir
+        /// </returns>
+        string GetCurPath();
+
+        /// <summary>
+        /// Returns the item at the given index
+        /// </summary>
+        /// <param name="index">
+        /// Index of item to get
+        /// </param>
+        /// <returns>
+        /// The item
+        /// </returns>
+        T GetItemAt(int index);
+
+        /// <summary>
+        /// Finds an item in the current dir
+        /// </summary>
+        /// <param name="item">
+        /// Item to find
+        /// </param>
+        /// <returns>
+        /// The index
+        /// </returns>
+        int GetItemIndex(T item);
+
+        /// <summary>
+        /// Returns the name of the item at the given index
+        /// </summary>
+        /// <param name="index">
+        /// Index of child in the current dir to get the name of
+        /// </param>
+        /// <returns>
+        /// The name string
+        /// </returns>
+        string GetNameAt(int index);
+
+        /// <returns>
+        /// True if current dir has a parent (is not the root)
+        /// </returns>
+        bool HasParent();
+
+        /// <returns>
+        /// True if a subdir exists at the given index
+        /// </returns>
+        bool HasSubdirAt(int index);
+
+        /// <summary>
+        /// Inserts a new item into the dir
+        /// The zero-based index determines where it is to be inserted
+        /// </summary>
+        /// <param name="index">
+        /// 0-based index in the current dir to add
+        /// If index points past end of list, adds item to the end
         /// </param>
         /// <param name="item">
-        /// Item to add.
+        /// Row to insert
         /// </param>
-        public virtual void Insert(int index, T item)
-        {
-            if (ItemExists(item)) {
-                throw new InvalidOperationException("Cannot add same item twice");
-            }
-            Node<T> node = new Node<T>(item);
-            // If index points past end of list, add item to end.
-            if (index > items.Count) {
-                index = items.Count;
-            }
-            items.Insert(index, node);
-        }
+        /// <param name="name">
+        /// Name of item
+        /// </param>
+        int Insert(int index, string name, T item);
 
         /// <summary>
         /// True if the reference is somewhere in the dir
         /// </summary>
-        public virtual bool ItemExists(T item)
-        {
-            return items.Find(i => i.item.Equals(item)) != null;
-        }
+        bool ItemExists(T item);
 
         /// <summary>
         /// True if an item exists at the given index
         /// </summary>
-        public virtual bool ItemExistsAt(int index)
-        {
-            return index >= 0 && index < items.Count;
-        }
+        bool ItemExistsAt(int index);
 
         /// <summary>
         /// Moves an item to another slot in the same dir
         /// </summary>
-        public virtual void Move(int srcIndex, int destIndex)
-        {
-            Node<T> item = items[srcIndex];
-            items.RemoveAt(srcIndex);
-            items.Insert(destIndex, item);
-        }
-
-        public Dir<T> Parent {
-            get {
-                return parent;
-            }
-            set {
-                this.parent = value;
-            }
-        }
+        void Move(int srcIndex, int destIndex);
 
         /// <summary>
         /// Deletes an item by reference from the dir
         /// </summary>
-        public virtual void Remove(T item)
-        {
-            if (item == null) {
-                throw new NullReferenceException("<item> cannot be null in call to Remove(T item)");
-            }
-            if (items.Remove(items.Find(i => i.item.Equals(item))) == false) {
-                throw new ApplicationException("Item \"" + item.ToString() + "\" could not be removed");
-            }
-        }
+        void Remove(T item);
 
         /// <summary>
         /// Deletes an item by index from the dir
         /// </summary>
-        public virtual void RemoveAt(int index)
-        {
-            if (!(index >= 0 && index < items.Count)) {
-                throw new InvalidOperationException("Cannot remove nonexistent item");
-            }
-            items.RemoveAt(index);
-        }
+        void RemoveAt(int index);
 
         /// <summary>
-        /// Assigns a subdir to an item and assigns its
-        /// parent to the current dir.
+        /// Changes the name of the item at the given index
         /// </summary>
-        public virtual void SetSubdir(int index, Dir<T> subdir)
-        {
-            items[index].subdir = subdir;
-            subdir.Parent = this;
-        }
+        /// <param name="index"></param>
+        /// <param name="name"></param>
+        void SetNameAt(int index, string name);
+
+        /// <summary>
+        /// Change the current dir to the parent dir, if it exists
+        /// </summary>
+        void UpDir();
     }
 }

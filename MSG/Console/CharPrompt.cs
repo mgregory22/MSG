@@ -3,6 +3,7 @@
 //
 
 using MSG.IO;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MSG.Console
@@ -32,7 +33,7 @@ namespace MSG.Console
         /// <param name="c">Char to validate</param>
         /// <param name="errors">Output object for error messages</param>
         /// <returns>True if char is invalid</returns>
-        private bool CharIsInvalid(char c, char[] validKeys, Print errors)
+        private bool CharIsInvalid(char c, List<char> validKeys, Print errors)
         {
             if (validKeys != null && !validKeys.Contains(c)) {
                 errors.StringNL(helpMsg);
@@ -48,7 +49,7 @@ namespace MSG.Console
         /// <param name="validKeys">Optional list of valid keys.
         /// If not provided all keys are valid.</param>
         /// <returns>The char entered by the user</returns>
-        public char PromptAndInput(Io io, char[] validKeys = null)
+        public char PromptAndInput(Io io, List<char> validKeys = null)
         {
             char c;
             do {

@@ -6,6 +6,7 @@ using MSG.Console;
 using MSG.IO;
 using MSGTest.IO;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace MSGTest.Console
 {
@@ -13,25 +14,15 @@ namespace MSGTest.Console
     [TestFixture]
     public class CharPromptTests
     {
-        CharPrompt prompt;
-        TestPrint print;
-        TestRead read;
-        Io io;
-        char[] validKeys;
-
-        [SetUp]
-        public void SetUp()
-        {
-            print = new TestPrint();
-            read = new TestRead();
-            io = new Io(print, read);
-            prompt = new CharPrompt();
-            validKeys = new char[] { 'a', 'b', '\x1B' };
-        }
-
         [Test]
         public void TestCharPromptInvalidatesInvalidChar()
         {
+            TestPrint print = new TestPrint();
+            TestRead read = new TestRead();
+            Io io = new Io(print, read);
+            CharPrompt prompt = new CharPrompt();
+            List<char> validKeys = new List<char>(new char[] { 'a', 'b', '\x1B' });
+
             char invalidKey = 'X';
             char validKey = 'a';
             // A valid key needs to be sent to terminate the prompt loop
@@ -46,6 +37,12 @@ namespace MSGTest.Console
         [Test]
         public void TestCharPromptValidatesValidChar()
         {
+            TestPrint print = new TestPrint();
+            TestRead read = new TestRead();
+            Io io = new Io(print, read);
+            CharPrompt prompt = new CharPrompt();
+            List<char> validKeys = new List<char>(new char[] { 'a', 'b', '\x1B' });
+
             char validKey = 'a';
             read.PushChar(validKey);
             char gotKey = prompt.PromptAndInput(io, validKeys);
@@ -57,6 +54,12 @@ namespace MSGTest.Console
         [Test]
         public void TestCharPromptHandlesEscape()
         {
+            TestPrint print = new TestPrint();
+            TestRead read = new TestRead();
+            Io io = new Io(print, read);
+            CharPrompt prompt = new CharPrompt();
+            List<char> validKeys = new List<char>(new char[] { 'a', 'b', '\x1B' });
+
             char escapeKey = '\x1B';
             read.PushChar(escapeKey);
             char gotKey = prompt.PromptAndInput(io, validKeys);

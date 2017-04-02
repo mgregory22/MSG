@@ -12,7 +12,7 @@ namespace MSG.Console
     /// print/read objects and prompt string.
     /// Can print the prompt and pause for keypress.
     /// </summary>
-    public abstract class InputPrompt : Cmd
+    public abstract class InputPrompt
     {
         protected string prompt;
         protected string pausePrompt;
@@ -57,7 +57,7 @@ namespace MSG.Console
         /// <summary>
         /// The text that prompts the user for input.
         /// </summary>
-        public string Prompt
+        public virtual string Prompt
         {
             get { return prompt; }
             set { prompt = value; }

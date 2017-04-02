@@ -10,12 +10,10 @@ namespace MSG.Patterns
     public abstract partial class Cmd
     {
         /// <summary>
-        /// Should perform the command with parameters initialized in the constructor.
+        /// Should perform the command with parameters
+        /// initialized in the constructor.
         /// </summary>
-        public virtual Result Do()
-        {
-            return CANTDO;
-        }
+        public abstract Result Do();
 
         /// <summary>
         /// Undoes a previously performed command.

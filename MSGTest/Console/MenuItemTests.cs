@@ -15,55 +15,78 @@ namespace MSGTest.Console
     [TestFixture]
     public class MenuItemTests
     {
-        /*
-         * Member variables
-         */
-        Io io;
-        UndoAndRedo undoAndRedo;
-
-        MenuItem menuItem;
-        string testDesc = "Test";
-        char testKey = 't';
-        int testMaxWidth = 40;
-        TestDlgCmd testDlgCmd;
-
-        [SetUp]
-        public void Initialize()
-        {
-            io = new Io(new Print(), new Read());
-            undoAndRedo = new UndoAndRedo();
-            testDlgCmd = new TestDlgCmd(io, undoAndRedo);
-            menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
-            menuItem.MaxWidth = testMaxWidth;
-        }
-
         [Test]
         public void TestDescriptionSaves()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             Assert.AreEqual(testDesc, menuItem.Description);
         }
 
         [Test]
         public void TestKeystrokeSaves()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             Assert.AreEqual(testKey, menuItem.Keystroke);
         }
 
         [Test]
         public void TestBasicKeyToStringIsCorrect()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             Assert.AreEqual("[t] Test\n", menuItem.ToString());
         }
 
         [Test]
         public void TestMaxWidthIsStored()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             Assert.AreEqual(testMaxWidth, menuItem.MaxWidth);
         }
 
         [Test]
         public void TestActionIsExecutedWhenCorrectKeystrokeIsSent()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             if (menuItem.DoesMatch(testKey)) {
                 menuItem.Do(io);
             }
@@ -73,12 +96,30 @@ namespace MSGTest.Console
         [Test]
         public void TestTrueIsReturnedWhenCorrectKeystrokeIsSent()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             Assert.IsTrue(menuItem.DoesMatch(testKey));
         }
 
         [Test]
         public void TestActionIsNotExecutedWhenWrongKeystrokesAreSent()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             // Try every key but the real one
             for (char k = ' '; k < '~'; k++) {
                 if (k != testKey) {
@@ -92,6 +133,15 @@ namespace MSGTest.Console
         [Test]
         public void TestFalseIsReturnedWhenWrongKeystrokeIsSent()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             bool result = false;
             // Try every key but the real one
             for (char k = ' '; k < '~'; k++) {
@@ -101,17 +151,6 @@ namespace MSGTest.Console
             }
             Assert.IsFalse(result);
         }
-    }
-
-    [TestFixture]
-    public class LongMenuItemTests
-    {
-        Io io;
-        UndoAndRedo undoAndRedo;
-        MenuItem menuItem;
-        string testDesc = "Test of a very long description to test wrapping";
-        char testKey = 't';
-        int testMaxWidth = 40;
 
         /// <remarks>
         /// Assumes string ends with '\n'
@@ -127,25 +166,33 @@ namespace MSGTest.Console
             }
         }
 
-        [SetUp]
-        public void Initialize()
-        {
-            io = new Io(new Print(), new Read());
-            undoAndRedo = new UndoAndRedo();
-            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
-            menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
-            menuItem.MaxWidth = testMaxWidth;
-        }
-
         [Test]
         public void TestToStringIsNoLongerThanMaxWidth()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test of a very long description to test wrapping";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             AssertAllLinesNoLongerThanMaxWidth(menuItem.ToString(), testMaxWidth);
         }
 
         [Test]
         public void TestToStringWrapsAtWordBoundary()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test of a very long description to test wrapping";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             string testOutput = "[T] Test of a very long description to\n";
             Assert.AreEqual(testOutput.Length, menuItem.ToStringByLine(0).Length);
         }
@@ -153,25 +200,20 @@ namespace MSGTest.Console
         [Test]
         public void TestToStringReturnsSecondLineOfWrappedText()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDesc = "Test of a very long description to test wrapping";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDesc, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             string testOutput = "test wrapping\n";
             Assert.IsTrue(menuItem.ToStringByLine(1).EndsWith(testOutput), "Expected: \"{0}\".EndsWith(\"{1}\")", menuItem.ToStringByLine(1), testOutput);
         }
-    }
 
-    [TestFixture]
-    public class VeryLongMenuItemTests
-    {
-        Io io;
-        UndoAndRedo undoAndRedo;
-        MenuItem menuItem;
-        string testDescLine1 = "Test of a very long test string that";
-        string testDescLine2 = "will be wrapped into three lines that";
-        string testDescLine3 = "hopefully will make sense because I plan";
-        string testDescLine4 = "on doing this right!";
-        char testKey = 't';
-        int testMaxWidth = 40;
-
-        private int GetKeystrokePrefixLen()
+        private int GetKeystrokePrefixLen(MenuItem menuItem)
         {
             string itemString = menuItem.ToString();
             int leftBracketPos = itemString.IndexOf('[');
@@ -181,25 +223,27 @@ namespace MSGTest.Console
             return rightBracketPos + 1;
         }
 
-        [SetUp]
-        public void Initialize()
-        {
-            io = new Io(new Print(), new Read());
-            undoAndRedo = new UndoAndRedo();
-            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
-            menuItem = new MenuItem(testKey, testDescLine1 + " " + testDescLine2 + " " + testDescLine3 + " " + testDescLine4, Cond.ALWAYS, testDlgCmd);
-            menuItem.MaxWidth = testMaxWidth;
-        }
-
         [Test]
         public void TestWrapSplit()
         {
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDescLine1 = "Test of a very long test string that";
+            string testDescLine2 = "will be wrapped into three lines that";
+            string testDescLine3 = "hopefully will make sense because I plan";
+            string testDescLine4 = "on doing this right!";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDescLine1 + " " + testDescLine2 + " " + testDescLine3 + " " + testDescLine4, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
             List<string> lines = new List<string>();
             menuItem.WrapSplit(menuItem.Description, testMaxWidth, lines);
-            LongMenuItemTests.AssertAllLinesNoLongerThanMaxWidth(testDescLine1, testMaxWidth);
-            LongMenuItemTests.AssertAllLinesNoLongerThanMaxWidth(testDescLine2, testMaxWidth);
-            LongMenuItemTests.AssertAllLinesNoLongerThanMaxWidth(testDescLine3, testMaxWidth);
-            LongMenuItemTests.AssertAllLinesNoLongerThanMaxWidth(testDescLine4, testMaxWidth);
+            AssertAllLinesNoLongerThanMaxWidth(testDescLine1, testMaxWidth);
+            AssertAllLinesNoLongerThanMaxWidth(testDescLine2, testMaxWidth);
+            AssertAllLinesNoLongerThanMaxWidth(testDescLine3, testMaxWidth);
+            AssertAllLinesNoLongerThanMaxWidth(testDescLine4, testMaxWidth);
             Assert.AreEqual(testDescLine1, lines[0]);
             Assert.AreEqual(testDescLine2, lines[1]);
             Assert.AreEqual(testDescLine3, lines[2]);
@@ -209,7 +253,19 @@ namespace MSGTest.Console
         [Test]
         public void TestDescriptionLinesAreIndentedPastKeystroke()
         {
-            string prefix = new String(' ', GetKeystrokePrefixLen());
+            Io io = new Io(new Print(), new Read());
+            UndoAndRedo undoAndRedo = new UndoAndRedo();
+            TestDlgCmd testDlgCmd = new TestDlgCmd(io, undoAndRedo);
+            string testDescLine1 = "Test of a very long test string that";
+            string testDescLine2 = "will be wrapped into three lines that";
+            string testDescLine3 = "hopefully will make sense because I plan";
+            string testDescLine4 = "on doing this right!";
+            char testKey = 't';
+            int testMaxWidth = 40;
+            MenuItem menuItem = new MenuItem(testKey, testDescLine1 + " " + testDescLine2 + " " + testDescLine3 + " " + testDescLine4, Cond.ALWAYS, testDlgCmd);
+            menuItem.MaxWidth = testMaxWidth;
+
+            string prefix = new String(' ', GetKeystrokePrefixLen(menuItem));
             for (int i = 1; i < menuItem.LineCount; i++) {
                 Assert.IsTrue(menuItem.ToStringByLine(i).StartsWith(prefix));
             }

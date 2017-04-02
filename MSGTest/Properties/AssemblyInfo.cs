@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Matt Gregory")]
 [assembly: AssemblyProduct("MSG Library")]
-[assembly: AssemblyCopyright("Copyright © Matt Gregory 2015")]
+[assembly: AssemblyCopyright("Copyright © Matt Gregory 2015-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
